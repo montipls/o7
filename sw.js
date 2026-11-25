@@ -1,4 +1,4 @@
-const CACHE_NAME = 'o7-v6';
+const CACHE_NAME = 'o7-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -14,11 +14,11 @@ const EXTERNAL_ASSETS = [
   'https://cdn.tailwindcss.com',
 ];
 
-// On install: pre-cache all local assets + best-effort cache external CDN scripts
+// On install: pre-cache all local assets (revalidating HTTP cache) + best-effort cache external CDN scripts
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      await cache.addAll(ASSETS);
+      await cache.addAll(ASSETS.map((url) => new Request(url, { cache: 'no-cache' })));
       await Promise.all(
         EXTERNAL_ASSETS.map((url) =>
           fetch(new Request(url, { mode: 'no-cors' }))
@@ -41,10 +41,30 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
-// On fetch: serve from cache first while refreshing in background when online
+// On fetch:
+// - Page navigations: network-first with HTTP cache revalidation ('no-cache'), falling back to SW cache offline
+// - Other assets: cache-first with background refresh
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   if (!e.request.url.startsWith('http')) return;
+
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request.url, { cache: 'no-cache' })
+        .then((response) => {
+          if (response && response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+            return response;
+          }
+          return caches.match(e.request).then((cached) => cached || response);
+        })
+        .catch(() =>
+          caches.match(e.request).then((cached) => cached || caches.match('./index.html'))
+        )
+    );
+    return;
+  }
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
@@ -56,11 +76,7 @@ self.addEventListener('fetch', (e) => {
           }
           return response;
         })
-        .catch(() => {
-          if (cached) return cached;
-          if (e.request.mode === 'navigate') return caches.match('./index.html');
-          return Response.error();
-        });
+        .catch(() => cached || Response.error());
 
       return cached || fetchPromise;
     })
