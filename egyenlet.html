@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="hu" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGYENLET // 07 — Szöveges feladatok érthetően</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Letisztult, karakteres betűtípusok: Space Grotesk (címek), Inter (szöveg), JetBrains Mono (egyenletek, kódok) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        noir: {
+                            950: '#09090b',
+                            900: '#111114',
+                            850: '#16161a',
+                            800: '#1d1d22',
+                            700: '#2a2a32',
+                        },
+                        crimson: {
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            950: '#2b0b0e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Alap dark-mode beállítások és finom alter textúra */
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            -webkit-tap-highlight-color: transparent;
+            background-image: radial-gradient(rgba(239, 68, 68, 0.06) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+
+        /* Kattintható szövegrészletek az adatkiválasztáshoz */
+        .chunk-btn {
+            display: inline;
+            padding: 2px 8px;
+            margin: 2px 1px;
+            border-radius: 6px;
+            border: 1px solid #3f3f46;
+            background-color: #18181b;
+            color: #e4e4e7;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            line-height: 1.9;
+            font-weight: 500;
+        }
+        .chunk-btn:hover:not(:disabled) {
+            border-color: #ef4444;
+            color: #ffffff;
+            background-color: #201214;
+        }
+        .chunk-btn.selected {
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.22);
+            color: #ffffff;
+            box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.4);
+        }
+        .chunk-btn.wrong-pick {
+            border-color: #ef4444;
+            border-style: dashed;
+            background-color: rgba(127, 29, 29, 0.35);
+            color: #fca5a5;
+        }
+        .chunk-btn.locked-useful {
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.18);
+            color: #ffffff;
+            cursor: default;
+        }
+        .chunk-btn.locked-fluff {
+            border-color: transparent;
+            background-color: transparent;
+            color: #52525b;
+            text-decoration: line-through;
+            padding: 0 3px;
+            cursor: default;
+        }
+
+        /* Finom lineáris megjelenés */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide {
+            animation: slideUp 0.28s ease-out forwards;
+        }
+
+        /* Szám mező nyilainak eltüntetése */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Egyedi sötét görgetősáv */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
+
+    <!-- LETISZTULT, MINIMALISTA FEJLÉC -->
+    <header class="sticky top-0 z-30 bg-noir-950/90 backdrop-blur-md border-b border-zinc-800/80">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+            <!-- Márka -->
+            <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block"></span>
+                <span class="font-display font-bold tracking-tight text-base sm:text-lg text-zinc-100">
+                    EGYENLET <span class="text-red-500 font-mono font-semibold">// 07</span>
+                </span>
+            </div>
+
+            <!-- Két egyszerű nézetváltó -->
+            <nav class="flex items-center gap-1 bg-noir-900 p-1 rounded-lg border border-zinc-800">
+                <button id="nav-learn" onclick="switchView('learn')"
+                    class="px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors bg-red-600 text-white">
+                    Magyarázat
+                </button>
+                <button id="nav-practice" onclick="switchView('practice')"
+                    class="px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors text-zinc-400 hover:text-zinc-100 flex items-center gap-2">
+                    <span>Gyakorlás</span>
+                    <span id="nav-count" class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">0/8</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- FŐ LINEÁRIS TARTALOM -->
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12">
+
+        <!-- ========================================================= -->
+        <!-- 1. NÉZET: MAGYARÁZAT ÉS KIDOLGOZOTT PÉLDÁK (LINEÁRIS)     -->
+        <!-- ========================================================= -->
+        <section id="view-learn" class="space-y-12 animate-slide">
+
+            <!-- Bevezető -->
+            <div class="space-y-4 border-l-2 border-red-500 pl-5">
+                <p class="font-mono text-xs uppercase tracking-widest text-red-500">
+                    7. osztály / Szöveges egyenletek
+                </p>
+                <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
+                    Ne szavakat magolj.<br>Értsd meg, mi történik.
+                </h1>
+                <p class="text-zinc-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                    A szöveges feladatoknál nem az a cél, hogy bemagolj szabályokat (például hogy a „kevesebb” szó mindig mínuszt jelent — mert ez sokszor nem is igaz). Egyszerűen képzeld el a helyzetet, dobd ki a felesleges körítést, és írd le számokkal, ami egyenlő.
+                </p>
+            </div>
+
+            <!-- 3 ALAPELV LINEÁRISAN -->
+            <div class="space-y-4">
+                <h2 class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                    Hogyan fogj neki minden feladatnak
+                </h2>
+
+                <div class="space-y-3">
+                    <!-- 01 -->
+                    <div class="p-5 rounded-xl bg-noir-900 border border-zinc-800 space-y-1.5">
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono text-xs font-bold text-red-500">01</span>
+                            <h3 class="font-display font-bold text-lg text-zinc-100">Szűrd ki a felesleges szöveget</h3>
+                        </div>
+                        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed pl-7">
+                            A legtöbb feladatban van körítés (hogy hívják a szereplőket, milyen színű a füzet, melyik nap történt). Ezeket felejtsd el. Csak három dolog számít: <span class="text-zinc-100 font-medium">mit keresünk (x)</span>, <span class="text-zinc-100 font-medium">milyen számok és viszonyok vannak</span>, és <span class="text-zinc-100 font-medium">mennyi a végeredmény</span>.
+                        </p>
+                    </div>
+
+                    <!-- 02 -->
+                    <div class="p-5 rounded-xl bg-noir-900 border border-zinc-800 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono text-xs font-bold text-red-500">02</span>
+                            <h3 class="font-display font-bold text-lg text-zinc-100">Miért rossz ötlet szavakat magolni?</h3>
+                        </div>
+                        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed pl-7">
+                            Nézd meg ezt az egyetlen mondatot: <span class="text-zinc-100 font-medium">„Lilinek 6-tal kevesebb kártyája van, mint Bencének.”</span>
+                        </p>
+                        <div class="pl-7 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            <div class="p-3.5 rounded-lg bg-noir-950 border border-zinc-800">
+                                <div class="font-mono text-xs text-zinc-500 mb-1">Ha Bence az x:</div>
+                                <div class="text-zinc-300">Lilinek kevesebb van nála, tehát Lili = <span class="font-mono text-red-400 font-bold">x − 6</span></div>
+                            </div>
+                            <div class="p-3.5 rounded-lg bg-noir-950 border border-red-500/40">
+                                <div class="font-mono text-xs text-red-400 mb-1">Ha Lili az x:</div>
+                                <div class="text-zinc-300">Akkor Bencének több van nála, tehát Bence = <span class="font-mono text-red-400 font-bold">x + 6</span></div>
+                            </div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-zinc-500 pl-7">
+                            Látod? Ugyanabban a mondatban ott volt a „kevesebb” szó, mégis <span class="font-mono text-zinc-300">+ 6</span> lett belőle, ha Lilit jelöltük x-szel. Mindig azt nézd meg: <span class="text-zinc-200">a valóságban kinek van több, és kinek kevesebb?</span>
+                        </p>
+                    </div>
+
+                    <!-- 03 -->
+                    <div class="p-5 rounded-xl bg-noir-900 border border-zinc-800 space-y-1.5">
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono text-xs font-bold text-red-500">03</span>
+                            <h3 class="font-display font-bold text-lg text-zinc-100">Az egyenlet megoldása: bontsd le az x mellől</h3>
+                        </div>
+                        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed pl-7">
+                            Az egyenlőségjel két oldala mindig egyensúlyban van. Bármit csinálsz az egyik oldallal, ugyanazt kell csinálnod a másikkal is. A célod annyi, hogy a végére csak egyetlen <span class="font-mono text-zinc-100">x</span> maradjon a bal oldalon.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KONKRÉT, LÉPÉSRŐL LÉPÉSRE MEGINDOKOLT PÉLDÁK -->
+            <div class="space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+                    <div>
+                        <h2 class="font-mono text-xs uppercase tracking-widest text-zinc-500 mb-1">
+                            Konkrét példák indoklással
+                        </h2>
+                        <p class="text-sm text-zinc-400">
+                            Nézd meg, hogyan maradnak meg a fontos adatok, és <span class="text-zinc-200">miért</span> végezzük el az egyes lépéseket.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3 példa választó sáv -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="renderExample(0)" id="ex-tab-0"
+                        class="py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-red-600/15 border-red-500 text-white">
+                        01 / Alap
+                    </button>
+                    <button onclick="renderExample(1)" id="ex-tab-1"
+                        class="py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-noir-900 border-zinc-800 text-zinc-400 hover:text-zinc-200">
+                        02 / Összehasonlítás
+                    </button>
+                    <button onclick="renderExample(2)" id="ex-tab-2"
+                        class="py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-noir-900 border-zinc-800 text-zinc-400 hover:text-zinc-200">
+                        03 / Téglalap
+                    </button>
+                </div>
+
+                <!-- Példa tartalom doboza -->
+                <div id="example-container" class="rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-6">
+                    <!-- JS tölti be -->
+                </div>
+            </div>
+
+            <!-- Egyetlen tiszta továbblépés gomb -->
+            <div class="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <p class="text-sm text-zinc-400">
+                    A gyakorlásban minden feladatnál neked kell kikattintgatnod a hasznos adatokat, utána felírni és megoldani az egyenletet.
+                </p>
+                <button onclick="switchView('practice')"
+                    class="shrink-0 px-6 py-3.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-display font-bold text-sm sm:text-base transition-colors">
+                    Induljon a gyakorlás →
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- 2. NÉZET: LINEÁRIS GYAKORLÁS (8 FELADATTÍPUS)             -->
+        <!-- ========================================================= -->
+        <section id="view-practice" class="hidden space-y-8 animate-slide">
+
+            <!-- SZINTVÁLASZTÓ SÁV (KOMPAKT, LINEÁRIS) -->
+            <div class="space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                        Feladattípusok — könnyűtől a nehezebbig
+                    </span>
+                    <button onclick="toggleResetConfirm(true)" class="font-mono text-xs text-zinc-600 hover:text-red-400 transition-colors">
+                        Haladás törlése
+                    </button>
+                </div>
+
+                <!-- Inline törlés megerősítés (confirm() helyett, modal nélkül) -->
+                <div id="reset-confirm-bar" class="hidden p-3.5 rounded-lg bg-crimson-950 border border-red-500/40 flex flex-wrap items-center justify-between gap-3 text-sm animate-slide">
+                    <span class="text-zinc-200">Biztosan törlöd az eddig teljesített szinteket?</span>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleResetConfirm(false)" class="px-3 py-1.5 rounded-md bg-noir-900 border border-zinc-700 text-zinc-300 text-xs font-semibold hover:text-white">
+                            Mégse
+                        </button>
+                        <button onclick="confirmReset()" class="px-3 py-1.5 rounded-md bg-red-600 hover:bg-red-500 text-white text-xs font-semibold">
+                            Igen, törlés
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 8 szint sávja -->
+                <div id="level-strip" class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                    <!-- JS generálja -->
+                </div>
+
+                <!-- Aktuális szint adatai + Sorozat állapota -->
+                <div class="p-4 sm:p-5 rounded-xl bg-noir-900 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <span id="lvl-code" class="font-mono text-xs font-bold text-red-500">01 / 08</span>
+                            <span class="text-zinc-700">•</span>
+                            <span id="lvl-diff" class="font-mono text-xs text-zinc-400">Nagyon könnyű</span>
+                            <span id="lvl-done-tag" class="hidden font-mono text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-white text-black">
+                                KÉSZ
+                            </span>
+                        </div>
+                        <h2 id="lvl-title" class="font-display font-bold text-xl text-white">Betöltés...</h2>
+                    </div>
+
+                    <div class="flex items-center justify-between sm:justify-end gap-5 border-t sm:border-t-0 border-zinc-800 pt-3 sm:pt-0">
+                        <!-- 2 egymás utáni jó megoldás jelző -->
+                        <div>
+                            <div class="font-mono text-[11px] uppercase tracking-wider text-zinc-500 mb-1">
+                                Sorozat (2 kell)
+                            </div>
+                            <div class="flex items-center gap-1.5" id="streak-bars">
+                                <span class="w-8 h-2 rounded-sm bg-zinc-800"></span>
+                                <span class="w-8 h-2 rounded-sm bg-zinc-800"></span>
+                            </div>
+                        </div>
+                        <button onclick="generateNewProblem()"
+                            class="px-3.5 py-2 rounded-lg bg-noir-950 hover:bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-xs font-mono font-semibold text-zinc-300 hover:text-white transition-colors">
+                            Új adatok
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- LÉPÉS 01: KATTINTS A HASZNOS ADATOKRA A SZÖVEGBEN     -->
+            <!-- ===================================================== -->
+            <div id="card-step-1" class="rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-5">
+                <div class="flex items-center justify-between gap-2">
+                    <span id="s1-tag" class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+                        Lépés 01 — Adatok kiszedése
+                    </span>
+                    <span id="s1-status" class="font-mono text-xs text-zinc-500">Kijelölve: 0</span>
+                </div>
+
+                <p class="text-sm text-zinc-400">
+                    Kattints rá a szövegben az <span class="text-zinc-100 font-semibold">összes hasznos adatra</span>, ami kell az egyenlethez. A felesleges körítést hagyd ki.
+                </p>
+
+                <!-- Interaktív szöveg doboz -->
+                <div id="interactive-story" class="p-5 rounded-lg bg-noir-950 border border-zinc-800 text-base sm:text-lg leading-loose text-zinc-200">
+                    <!-- JS generálja a kattintható darabokkal -->
+                </div>
+
+                <!-- 1. lépés gombja -->
+                <div id="s1-actions" class="flex flex-wrap items-center justify-between gap-3">
+                    <button onclick="checkStep1()"
+                        class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm transition-colors">
+                        Adatok ellenőrzése
+                    </button>
+                    <button onclick="revealFullSolution(true)"
+                        class="text-xs font-mono text-zinc-500 hover:text-zinc-200 transition-colors">
+                        Elakadtam, mutasd a megoldást
+                    </button>
+                </div>
+
+                <!-- 1. lépés visszajelzés -->
+                <div id="s1-feedback" class="hidden p-4 rounded-lg text-sm leading-relaxed animate-slide"></div>
+
+                <!-- Ha megvan az 1. lépés: Kigyűjtött adatok összegzése + opcionális ábra -->
+                <div id="s1-summary" class="hidden pt-4 border-t border-zinc-800 space-y-4 animate-slide">
+                    <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                        Kigyűjtött adatok
+                    </div>
+                    <div id="s1-extracted-list" class="space-y-2 text-sm"></div>
+                    <div id="s1-visual"></div>
+                </div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- LÉPÉS 02: EGYENLET KIVÁLASZTÁSA                       -->
+            <!-- ===================================================== -->
+            <div id="card-step-2" class="hidden rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-5 animate-slide">
+                <div class="flex items-center justify-between gap-2">
+                    <span id="s2-tag" class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+                        Lépés 02 — Egyenlet felírása
+                    </span>
+                </div>
+
+                <div class="space-y-1">
+                    <h3 class="font-display font-bold text-lg text-white">
+                        Melyik egyenlet írja le ezt a helyzetet?
+                    </h3>
+                    <p id="s2-unknown-note" class="text-sm text-zinc-400"></p>
+                </div>
+
+                <!-- 4 egyenlet lineárisan egymás alatt -->
+                <div id="eq-options" class="space-y-2.5">
+                    <!-- JS tölti be -->
+                </div>
+
+                <!-- 2. lépés visszajelzés -->
+                <div id="s2-feedback" class="hidden p-4 rounded-lg text-sm leading-relaxed animate-slide"></div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- LÉPÉS 03: EGYENLET MEGOLDÁSA                          -->
+            <!-- ===================================================== -->
+            <div id="card-step-3" class="hidden rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-5 animate-slide">
+                <div class="flex items-center justify-between gap-2">
+                    <span id="s3-tag" class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+                        Lépés 03 — Megoldás
+                    </span>
+                </div>
+
+                <!-- Felírt egyenlet kiemelve -->
+                <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 text-center">
+                    <div class="font-mono text-xs text-zinc-500 mb-1">A felírt egyenlet</div>
+                    <div id="locked-eq" class="font-mono text-2xl sm:text-3xl font-bold text-white tracking-wide"></div>
+                </div>
+
+                <!-- Beviteli mező -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div class="flex items-center gap-3 flex-1 px-4 py-3 rounded-lg bg-noir-950 border border-zinc-700 focus-within:border-red-500 transition-colors">
+                        <span class="font-mono font-bold text-lg text-red-500">x =</span>
+                        <input type="number" id="ans-input" placeholder="írd be a számot"
+                            class="w-full bg-transparent outline-none font-mono text-lg font-semibold text-white placeholder-zinc-600"
+                            onkeydown="if(event.key==='Enter') checkStep3()">
+                        <span id="ans-unit" class="font-mono text-xs text-zinc-400 whitespace-nowrap"></span>
+                    </div>
+                    <button id="btn-check-3" onclick="checkStep3()"
+                        class="px-6 py-3.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm sm:text-base transition-colors">
+                        Ellenőrzés
+                    </button>
+                </div>
+
+                <!-- Diszkrét segítség sor -->
+                <div id="s3-helpers" class="flex flex-wrap items-center gap-5 pt-1">
+                    <button onclick="showHint()" class="font-mono text-xs text-zinc-400 hover:text-red-400 transition-colors">
+                        + Első lépés tipp
+                    </button>
+                    <button onclick="revealFullSolution(true)" class="font-mono text-xs text-zinc-500 hover:text-zinc-200 transition-colors">
+                        Megoldás megnézése
+                    </button>
+                </div>
+
+                <!-- Tipp doboz -->
+                <div id="s3-hint" class="hidden p-4 rounded-lg bg-noir-950 border-l-2 border-red-500 text-sm text-zinc-300 leading-relaxed animate-slide"></div>
+
+                <!-- 3. lépés hibavisszajelzés -->
+                <div id="s3-feedback" class="hidden p-4 rounded-lg text-sm leading-relaxed animate-slide"></div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- SIKER KÁRTYA (MEGOLDVA)                               -->
+            <!-- ===================================================== -->
+            <div id="card-success" class="hidden rounded-xl bg-noir-900 border-2 border-white p-5 sm:p-7 space-y-4 animate-slide">
+                <div class="flex items-center gap-3">
+                    <span id="win-badge" class="font-mono text-xs font-bold uppercase px-2.5 py-1 rounded bg-white text-black">
+                        HELYES
+                    </span>
+                    <h3 id="win-title" class="font-display font-bold text-xl text-white"></h3>
+                </div>
+                <p id="win-desc" class="text-sm sm:text-base text-zinc-300 leading-relaxed"></p>
+                <p id="win-verify" class="font-mono text-xs sm:text-sm text-zinc-400 bg-noir-950 p-3 rounded-lg border border-zinc-800"></p>
+
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <button onclick="generateNewProblem()"
+                        class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm transition-colors">
+                        Következő feladat →
+                    </button>
+                    <button id="btn-next-lvl" onclick="goNextLevel()"
+                        class="hidden px-5 py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-black font-semibold text-sm transition-colors">
+                        Tovább a következő szintre →
+                    </button>
+                    <button onclick="revealFullSolution(false)"
+                        class="px-4 py-2.5 rounded-lg bg-noir-950 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 font-mono text-xs transition-colors">
+                        Levezetés megnézése
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- TELJES, INDOKOLT MEGOLDÁS (LÉPÉSRŐL LÉPÉSRE)          -->
+            <!-- ===================================================== -->
+            <div id="card-solution" class="hidden rounded-xl bg-noir-900 border border-red-500/60 p-5 sm:p-7 space-y-6 animate-slide">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-zinc-800">
+                    <div>
+                        <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+                            Teljes levezetés
+                        </span>
+                        <h3 class="font-display font-bold text-lg text-white mt-0.5">
+                            Mit és miért csinálunk ennél a feladatnál?
+                        </h3>
+                    </div>
+                </div>
+
+                <div id="solution-body" class="space-y-6">
+                    <!-- JS tölti be -->
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800 flex justify-end">
+                    <button onclick="generateNewProblem()"
+                        class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm transition-colors">
+                        Megértettem, kérek új feladatot →
+                    </button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- JAVASCRIPT LOGIKA -->
+    <script>
+        /* ==============================================================
+           1. SEGÉDFÜGGVÉNYEK (VÉLETLEN SZÁMOK, MAGYAR RAGOZÁS)
+           ============================================================== */
+        function randInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function pick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        function shuffle(arr) {
+            const c = [...arr];
+            for (let i = c.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [c[i], c[j]] = [c[j], c[i]];
+            }
+            return c;
+        }
+
+        // Tárgyeset (-t / -ot / -et / -öt / -at)
+        function ragT(n) {
+            if (n === 0) return '0-t';
+            const l = n % 10, l2 = n % 100;
+            if (l !== 0) {
+                const m = { 1: 'et', 2: 't', 3: 'at', 4: 'et', 5: 'öt', 6: 'ot', 7: 'et', 8: 'at', 9: 'et' };
+                return `${n}-${m[l]}`;
+            }
+            if (l2 !== 0) {
+                const m10 = { 10: 'et', 20: 'at', 30: 'at', 40: 'et', 50: 'et', 60: 'at', 70: 'et', 80: 'at', 90: 'et' };
+                return `${n}-${m10[l2]}`;
+            }
+            if (n % 1000 !== 0) return `${n}-at`;
+            return `${n}-et`;
+        }
+
+        // Eszközhatározó (-val / -vel hasonulva)
+        function ragVal(n) {
+            const l = n % 10, l2 = n % 100;
+            if (l !== 0) {
+                const m = { 1: 'gyel', 2: 'vel', 3: 'mal', 4: 'gyel', 5: 'tel', 6: 'tal', 7: 'tel', 8: 'cal', 9: 'cel' };
+                return `${n}-${m[l]}`;
+            }
+            if (l2 !== 0) {
+                const m10 = { 10: 'zel', 20: 'szal', 30: 'cal', 40: 'nel', 50: 'nel', 60: 'nal', 70: 'nel', 80: 'nal', 90: 'nel' };
+                return `${n}-${m10[l2]}`;
+            }
+            if (n % 1000 !== 0) return `${n}-zal`;
+            return `${n}-rel`;
+        }
+
+        function szorzoAnnyi(k) {
+            return { 2: 'kétszer', 3: 'háromszor', 4: 'négyszer', 5: 'ötször', 6: 'hatszor', 7: 'hétszer' }[k] || `${k}-szer`;
+        }
+        function szorzoResze(k) {
+            return { 2: 'kétszerese', 3: 'háromszorosa', 4: 'négyszerese', 5: 'ötszöröse', 6: 'hatszorosa', 7: 'hétszerese' }[k] || `${k}-szerese`;
+        }
+        function szorzoReszet(k) {
+            return { 2: 'kétszeresét', 3: 'háromszorosát', 4: 'négyszeresét', 5: 'ötszörösét', 6: 'hatszorosát', 7: 'hétszeresét' }[k] || `${k}-szeresét`;
+        }
+
+        // Egyedi 4 válaszlehetőség összeállítása, mindegyikhez indoklással, ha rossz
+        function buildEqOptions(correctText, wrongList) {
+            const used = new Set([correctText]);
+            const result = [{ eq: correctText, correct: true, whyWrong: '' }];
+            for (const item of wrongList) {
+                if (result.length >= 4) break;
+                if (item.eq && !used.has(item.eq)) {
+                    used.add(item.eq);
+                    result.push({ eq: item.eq, correct: false, whyWrong: item.whyWrong });
+                }
+            }
+            return shuffle(result);
+        }
+
+        /* ==============================================================
+           2. KIDOLGOZOTT MINTAPÉLDÁK (MAGYARÁZAT NÉZETHEZ)
+           Minden lépésnél konkrétan indokolva: "Itt ..., mert ..."
+           ============================================================== */
+        const WORKED_EXAMPLES = [
+            {
+                title: 'Kétlépéses feladat — szorzás és összeadás',
+                storyHtml: `<span class="text-zinc-600 line-through">Kedden matekórán</span> gondoltam <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">egy számra</span>. <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">Megszoroztam 5-tel</span>, majd <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">hozzáadtam 4-et</span>, <span class="text-zinc-600 line-through">leírtam a lapra</span>, és <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">39-et kaptam</span>. Melyik számra gondoltam?`,
+                setupNote: 'A gondolt számot jelöljük x-szel. Ha megszorozzuk 5-tel, az 5 · x lesz. Ehhez adunk 4-et, és ennek az eredménye 39.',
+                equation: '5 · x + 4 = 39',
+                steps: [
+                    {
+                        eq: '5 · x + 4 = 39',
+                        op: '/ − 4',
+                        why: 'Itt kivonunk 4-et mindkét oldalból, mert a bal oldalon még ott van a + 4 az x-es rész mellett. Először mindig ezt a különálló számot érdemes eltüntetni.'
+                    },
+                    {
+                        eq: '5 · x = 35',
+                        op: '/ : 5',
+                        why: 'Itt osztunk 5-tel mindkét oldalon, mert az 5 · x azt jelenti, hogy öt darab x van együtt, nekünk viszont csak egyetlen x értéke kell.'
+                    },
+                    {
+                        eq: 'x = 7',
+                        op: 'kész',
+                        why: '35-öt elosztva 5-tel 7-et kapunk. Megvan a keresett szám.'
+                    }
+                ],
+                verify: 'Ellenőrzés a szövegbe: ha 7-re gondoltam, 7 · 5 = 35, ehhez hozzáadva 4-et pontosan 39 lesz.'
+            },
+            {
+                title: 'Fordított megfogalmazás — gondolkodj a helyzeten',
+                storyHtml: `Anna és Bence <span class="text-zinc-600 line-through">a nyári szünetben</span> <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">együtt 30 matricát</span> gyűjtött. Annának <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">4-gyel kevesebb matricája van</span>, mint Bencének. Hány matricája van <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">Annának</span>?`,
+                setupNote: 'Annát kérdezi a feladat, ezért Anna = x. Hiába szerepel a szövegben a „kevesebb” szó: ha Annának van kevesebb, akkor Bencének biztosan 4-gyel TÖBB van nála, vagyis Bence = x + 4. Együtt 30-an vannak.',
+                equation: 'x + (x + 4) = 30',
+                steps: [
+                    {
+                        eq: '2 · x + 4 = 30',
+                        op: 'összevonás',
+                        why: 'Itt összevonjuk a két x-et, mert egy x meg még egy x az pontosan 2 · x.'
+                    },
+                    {
+                        eq: '2 · x = 26',
+                        op: '/ − 4',
+                        why: 'Itt kivonunk 4-et mindkét oldalból, mert el akarjuk tüntetni a + 4-et a 2 · x mellől. 30 − 4 = 26.'
+                    },
+                    {
+                        eq: 'x = 13',
+                        op: '/ : 2',
+                        why: 'Itt osztunk 2-vel, mert két egyforma x ad ki együtt 26-ot, így egy darab x ennek a fele.'
+                    }
+                ],
+                verify: 'Ellenőrzés: Anna = 13 matrica. Bencének 4-gyel több van (17). Annának tényleg 4-gyel kevesebb van, mint Bencének, és 13 + 17 = 30.'
+            },
+            {
+                title: 'Téglalap kerülete — vigyázz, minden oldalból 2 van',
+                storyHtml: `<span class="text-zinc-600 line-through">Egy fekete kartonból kivágott</span> téglalap <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">kerülete 36 cm</span>. A <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">hosszabbik oldala 4 cm-rel hosszabb</span> a rövidebbiknél. Hány cm a <span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">rövidebbik oldal</span>?`,
+                setupNote: 'A rövidebb oldal legyen x, akkor a hosszabb oldal x + 4. A kerülethez mind a négy oldalt össze kell adni: két rövidebbet (2 · x) és két hosszabbat (2 · (x + 4)).',
+                equation: '2 · x + 2 · (x + 4) = 36',
+                steps: [
+                    {
+                        eq: '2 · x + 2 · x + 8 = 36',
+                        op: 'zárójel felbontása',
+                        why: 'Itt megszorozzuk a zárójel mindkét tagját 2-vel, mert két darab (x + 4) oldalunk van: ez 2 · x és még 2 · 4 = 8 cm.'
+                    },
+                    {
+                        eq: '4 · x + 8 = 36',
+                        op: 'összevonás',
+                        why: 'Itt összevonjuk az x-eket: 2 · x + 2 · x együtt 4 · x.'
+                    },
+                    {
+                        eq: '4 · x = 28',
+                        op: '/ − 8',
+                        why: 'Itt kivonunk 8-at mindkét oldalból, mert levesszük a + 8 cm-t, hogy csak a 4 · x maradjon a bal oldalon.'
+                    },
+                    {
+                        eq: 'x = 7',
+                        op: '/ : 4',
+                        why: 'Itt osztunk 4-gyel, mert négy darab x együtt 28 cm, egyetlen x tehát 28 : 4 = 7 cm.'
+                    }
+                ],
+                verify: 'Ellenőrzés: a rövidebb oldal 7 cm, a hosszabb 7 + 4 = 11 cm. A kerület: 7 + 11 + 7 + 11 = 36 cm.'
+            }
+        ];
+
+        function renderExample(idx) {
+            const ex = WORKED_EXAMPLES[idx];
+            for (let i = 0; i < WORKED_EXAMPLES.length; i++) {
+                const btn = document.getElementById(`ex-tab-${i}`);
+                if (i === idx) {
+                    btn.className = 'py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-red-600/15 border-red-500 text-white';
+                } else {
+                    btn.className = 'py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-noir-900 border-zinc-800 text-zinc-400 hover:text-zinc-200';
+                }
+            }
+
+            document.getElementById('example-container').innerHTML = `
+                <div class="space-y-5 animate-slide">
+                    <div class="font-display font-bold text-lg text-white">${ex.title}</div>
+
+                    <!-- Szöveg áthúzott körítéssel -->
+                    <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 text-base leading-loose text-zinc-300">
+                        ${ex.storyHtml}
+                    </div>
+
+                    <!-- Hogyan lesz ebből egyenlet -->
+                    <div class="space-y-2">
+                        <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">Hogyan írjuk fel az egyenletet</div>
+                        <p class="text-sm text-zinc-300 leading-relaxed">${ex.setupNote}</p>
+                        <div class="p-3.5 rounded-lg bg-noir-950 border border-red-500/40 font-mono text-lg sm:text-xl font-bold text-white text-center">
+                            ${ex.equation}
+                        </div>
+                    </div>
+
+                    <!-- Lépések konkrét indoklással -->
+                    <div class="space-y-2.5">
+                        <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">Megoldás lépésről lépésre</div>
+                        ${ex.steps.map(st => `
+                            <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 space-y-2">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="font-mono text-base sm:text-lg font-bold text-white">${st.eq}</span>
+                                    <span class="font-mono text-xs font-bold px-2.5 py-1 rounded bg-red-600/20 text-red-400 border border-red-500/40">${st.op}</span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${st.why}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Ellenőrzés -->
+                    <div class="p-3.5 rounded-lg bg-noir-950 border-l-2 border-white text-xs sm:text-sm text-zinc-300 font-mono">
+                        ${ex.verify}
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==============================================================
+           3. A 8 FELADATTÍPUS GENERÁTORAI (KATTINTHATÓ ADATOKKAL)
+           ============================================================== */
+        const PAIRS = [
+            { a: 'Anna', aNak: 'Annának', b: 'Bence', bNak: 'Bencének' },
+            { a: 'Peti', aNak: 'Petinek', b: 'Kati', bNak: 'Katinak' },
+            { a: 'Lili', aNak: 'Lilinek', b: 'Marci', bNak: 'Marcinak' },
+            { a: 'Dóri', aNak: 'Dórinak', b: 'Tomi', bNak: 'Tominak' },
+            { a: 'Máté', aNak: 'Máténak', b: 'Zsófi', bNak: 'Zsófinak' },
+            { a: 'Ádám', aNak: 'Ádámnak', b: 'Eszti', bNak: 'Esztinek' }
+        ];
+
+        const ITEMS = [
+            { acc: 'matricát', nom: 'matricája', unit: 'matrica' },
+            { acc: 'kártyát', nom: 'kártyája', unit: 'kártya' },
+            { acc: 'üveggolyót', nom: 'üveggolyója', unit: 'üveggolyó' },
+            { acc: 'könyvet', nom: 'könyve', unit: 'könyv' },
+            { acc: 'kitűzőt', nom: 'kitűzője', unit: 'kitűző' }
+        ];
+
+        const SHOPS = [
+            { item1Acc: 'füzetet', item1Nom: 'füzet', item2Acc: 'tollat', item2Nom: 'toll' },
+            { item1Acc: 'csokit', item1Nom: 'csoki', item2Acc: 'üdítőt', item2Nom: 'üdítő' },
+            { item1Acc: 'kiflit', item1Nom: 'kifli', item2Acc: 'kakaót', item2Nom: 'kakaó' },
+            { item1Acc: 'ceruzát', item1Nom: 'ceruza', item2Acc: 'radírt', item2Nom: 'radír' },
+            { item1Acc: 'muffint', item1Nom: 'muffin', item2Acc: 'teát', item2Nom: 'tea' }
+        ];
+
+        const FLUFF_TIMES = ['Tegnap matekórán', 'A szünetben', 'Reggel a buszon', 'Délután otthon', 'Hétfő este'];
+        const FLUFF_ACTIONS = ['leírtam egy cetlire', 'elmondtam a padtársamnak', 'felírtam a füzet szélére', 'hangosan kimondtam'];
+
+        function buildRectSVG(shortSide, longSide) {
+            return `
+                <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 flex flex-col items-center">
+                    <div class="font-mono text-xs text-zinc-500 mb-2">Vázlat (mindkét oldalból 2 van)</div>
+                    <svg viewBox="0 0 260 115" class="w-60 h-auto">
+                        <rect x="48" y="26" width="164" height="62" rx="3" fill="#18181b" stroke="#ef4444" stroke-width="2"/>
+                        <text x="130" y="18" text-anchor="middle" fill="#f4f4f5" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
+                        <text x="130" y="106" text-anchor="middle" fill="#f4f4f5" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
+                        <text x="24" y="61" text-anchor="middle" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
+                        <text x="236" y="61" text-anchor="middle" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
+                    </svg>
+                </div>
+            `;
+        }
+
+        function buildAgeTable(childName, parentName, childNow, parentNow, years) {
+            return `
+                <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 overflow-x-auto">
+                    <div class="font-mono text-xs text-zinc-500 mb-2">Életkorok áttekintése</div>
+                    <table class="w-full text-xs sm:text-sm text-left border-collapse font-mono">
+                        <thead>
+                            <tr class="border-b border-zinc-800 text-zinc-500">
+                                <th class="py-2 pr-3">Szereplő</th>
+                                <th class="py-2 pr-3">Most</th>
+                                <th class="py-2 text-red-400">${years} év múlva (+${years})</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-800/70 text-zinc-200">
+                            <tr>
+                                <td class="py-2 pr-3 text-zinc-400 font-sans font-medium">${childName}</td>
+                                <td class="py-2 pr-3 font-bold">${childNow}</td>
+                                <td class="py-2 font-bold text-white">${childNow} + ${years}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 pr-3 text-zinc-400 font-sans font-medium">${parentName}</td>
+                                <td class="py-2 pr-3 font-bold">${parentNow}</td>
+                                <td class="py-2 font-bold text-white">${parentNow} + ${years}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        const LEVELS = [
+            // 01: Egyszerű + / -
+            {
+                id: 'lvl1',
+                code: '01',
+                title: 'Egyszerű számtalálós (+ és −)',
+                difficulty: 'Nagyon könnyű',
+                generate() {
+                    const isAdd = Math.random() < 0.5;
+                    const fluff1 = pick(FLUFF_TIMES);
+                    const fluff2 = pick(FLUFF_ACTIONS);
+
+                    if (isAdd) {
+                        const x = randInt(5, 25);
+                        const a = randInt(3, 18);
+                        const b = x + a;
+                        const eq = `x + ${a} = ${b}`;
+                        return {
+                            tokens: [
+                                { text: fluff1, clickable: true, useful: false, reason: `A „${fluff1}” csak a történet időpontja, nem kell az egyenlethez.` },
+                                { text: ' gondoltam ', clickable: false },
+                                { text: 'egy számra', clickable: true, useful: true },
+                                { text: '. ', clickable: false },
+                                { text: `Hozzáadtam ${ragT(a)}`, clickable: true, useful: true },
+                                { text: ', ', clickable: false },
+                                { text: fluff2, clickable: true, useful: false, reason: `A „${fluff2}” csak körítés, matek szempontjából nincs jelentősége.` },
+                                { text: ', és eredményül ', clickable: false },
+                                { text: `${ragT(b)} kaptam`, clickable: true, useful: true },
+                                { text: '. Melyik számra gondoltam?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Keresett szám', val: 'x' },
+                                { key: 'Művelet', val: `hozzáadunk ${ragT(a)} → x + ${a}` },
+                                { key: 'Eredmény', val: `= ${b}` }
+                            ],
+                            unknownNote: 'A gondolt szám legyen x.',
+                            unit: '',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x − ${a} = ${b}`, whyWrong: `A szövegben hozzáadtunk ${ragT(a)}, nem elvettünk belőle.` },
+                                { eq: `${a} · x = ${b}`, whyWrong: `Nem szoroztunk ${ragVal(a)}, hanem hozzáadtuk.` },
+                                { eq: `x + ${b} = ${a}`, whyWrong: `A ${b} a végeredmény, annak kell az egyenlőségjel jobb oldalán állnia.` }
+                            ]),
+                            answer: x,
+                            hint: `Mivel + ${a} van az x mellett, vonj ki ${ragT(a)} mindkét oldalból, hogy az x egyedül maradjon.`,
+                            steps: [
+                                { eq, op: `/ − ${a}`, why: `Itt kivonunk ${ragT(a)} mindkét oldalból, mert el akarjuk tüntetni a + ${a}-t az x mellől. Ha balról elvesszük, jobbról is el kell venni.` },
+                                { eq: `x = ${x}`, op: 'kész', why: `Mivel ${b} − ${a} = ${x}, a gondolt szám ${x}.` }
+                            ],
+                            verify: `Ellenőrzés: ${x} + ${a} = ${b}. Pontosan stimmel.`
+                        };
+                    } else {
+                        const b = randInt(6, 22);
+                        const a = randInt(3, 16);
+                        const x = b + a;
+                        const eq = `x − ${a} = ${b}`;
+                        return {
+                            tokens: [
+                                { text: fluff1, clickable: true, useful: false, reason: `A „${fluff1}” csak a történet időpontja, nem kell a számoláshoz.` },
+                                { text: ' gondoltam ', clickable: false },
+                                { text: 'egy számra', clickable: true, useful: true },
+                                { text: '. ', clickable: false },
+                                { text: `Elvettem belőle ${ragT(a)}`, clickable: true, useful: true },
+                                { text: ', ', clickable: false },
+                                { text: fluff2, clickable: true, useful: false, reason: `A „${fluff2}” csak felesleges részlet, hagyd ki.` },
+                                { text: ', és így ', clickable: false },
+                                { text: `${ragT(b)} maradt`, clickable: true, useful: true },
+                                { text: '. Melyik számra gondoltam?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Keresett szám', val: 'x' },
+                                { key: 'Művelet', val: `elveszünk ${ragT(a)} → x − ${a}` },
+                                { key: 'Maradék', val: `= ${b}` }
+                            ],
+                            unknownNote: 'A gondolt szám legyen x.',
+                            unit: '',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + ${a} = ${b}`, whyWrong: `A szövegben elvettünk ${ragT(a)} a számból, nem hozzáadtunk.` },
+                                { eq: `${a} − x = ${b}`, whyWrong: `Az x-ből vettük el a ${ragT(a)}, nem fordítva.` },
+                                { eq: `x − ${b} = ${a}`, whyWrong: `A ${b} a maradék (végeredmény), nem a kivont szám.` }
+                            ]),
+                            answer: x,
+                            hint: `Mivel ${ragT(a)} elvettünk az eredeti számból, adj hozzá ${ragT(a)} mindkét oldalhoz, hogy visszakapd az x-et.`,
+                            steps: [
+                                { eq, op: `/ + ${a}`, why: `Itt hozzáadunk ${ragT(a)} mindkét oldalhoz, mert az eredeti számból elvettünk ${ragT(a)}. Ha visszaadjuk, megkapjuk az eredeti x-et.` },
+                                { eq: `x = ${x}`, op: 'kész', why: `Mivel ${b} + ${a} = ${x}, ez a gondolt szám.` }
+                            ],
+                            verify: `Ellenőrzés: ${x} − ${a} = ${b}. Pontosan annyi maradt.`
+                        };
+                    }
+                }
+            },
+
+            // 02: Szorzás és osztás
+            {
+                id: 'lvl2',
+                code: '02',
+                title: 'Szorzás és osztás',
+                difficulty: 'Könnyű',
+                generate() {
+                    const isMul = Math.random() < 0.55;
+                    const fluff1 = pick(['Egy rejtvényben', 'A munkafüzetben', 'A táblán']);
+                    const fluff2 = pick(['kék tollal', 'szépen aláhúzva', 'a lap tetejére']);
+
+                    if (isMul) {
+                        const k = randInt(2, 7);
+                        const x = randInt(4, 15);
+                        const b = k * x;
+                        const eq = `${k} · x = ${b}`;
+                        return {
+                            tokens: [
+                                { text: fluff1, clickable: true, useful: false, reason: `A „${fluff1}” csak a helyszín, nincs rá szükség az egyenlethez.` },
+                                { text: ' szerepel ', clickable: false },
+                                { text: 'egy ismeretlen szám', clickable: true, useful: true },
+                                { text: '. ', clickable: false },
+                                { text: `Megszoroztam ${ragVal(k)}`, clickable: true, useful: true },
+                                { text: ', felírtam ', clickable: false },
+                                { text: fluff2, clickable: true, useful: false, reason: `A „${fluff2}” csak körítés, nem befolyásolja a számolást.` },
+                                { text: ', és ', clickable: false },
+                                { text: `${ragT(b)} kaptam`, clickable: true, useful: true },
+                                { text: '. Melyik ez a szám?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Ismeretlen szám', val: 'x' },
+                                { key: 'Művelet', val: `megszorozzuk ${ragVal(k)} → ${k} · x` },
+                                { key: 'Eredmény', val: `= ${b}` }
+                            ],
+                            unknownNote: 'Az ismeretlen szám legyen x.',
+                            unit: '',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x : ${k} = ${b}`, whyWrong: `A szövegben megszoroztuk ${ragVal(k)}, nem elosztottuk.` },
+                                { eq: `x + ${k} = ${b}`, whyWrong: `Nem hozzáadtunk ${ragT(k)}, hanem megszoroztuk vele.` },
+                                { eq: `${b} · x = ${k}`, whyWrong: `A ${b} a végeredmény, a ${k} pedig a szorzó.` }
+                            ]),
+                            answer: x,
+                            hint: `${k} darab x együtt ${b}. Milyen művelettel kapsz meg egyetlen darab x-et?`,
+                            steps: [
+                                { eq, op: `/ : ${k}`, why: `Itt osztunk ${ragVal(k)} mindkét oldalon, mert a ${k} · x azt jelenti, hogy ${k} darab x van együtt, nekünk viszont csak 1 darab x kell.` },
+                                { eq: `x = ${x}`, op: 'kész', why: `Mivel ${b} : ${k} = ${x}, ez az ismeretlen szám.` }
+                            ],
+                            verify: `Ellenőrzés: ${x} · ${k} = ${b}. Stimmel.`
+                        };
+                    } else {
+                        const k = randInt(2, 6);
+                        const b = randInt(4, 14);
+                        const x = k * b;
+                        const eq = `x : ${k} = ${b}`;
+                        return {
+                            tokens: [
+                                { text: fluff1, clickable: true, useful: false, reason: `A „${fluff1}” csak körítés, nem kell a matekhoz.` },
+                                { text: ' van ', clickable: false },
+                                { text: 'egy ismeretlen szám', clickable: true, useful: true },
+                                { text: '. ', clickable: false },
+                                { text: `Elosztottam ${ragVal(k)}`, clickable: true, useful: true },
+                                { text: ', leírtam ', clickable: false },
+                                { text: fluff2, clickable: true, useful: false, reason: `A „${fluff2}” nem számadat és nem művelet.` },
+                                { text: ', és ', clickable: false },
+                                { text: `${ragT(b)} kaptam`, clickable: true, useful: true },
+                                { text: '. Melyik szám volt ez?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Ismeretlen szám', val: 'x' },
+                                { key: 'Művelet', val: `elosztjuk ${ragVal(k)} → x : ${k}` },
+                                { key: 'Eredmény', val: `= ${b}` }
+                            ],
+                            unknownNote: 'Az ismeretlen szám legyen x.',
+                            unit: '',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `${k} · x = ${b}`, whyWrong: `Az x-et elosztottuk ${ragVal(k)}, nem megszoroztuk.` },
+                                { eq: `x − ${k} = ${b}`, whyWrong: `Osztás szerepel a szövegben, nem kivonás.` },
+                                { eq: `${k} : x = ${b}`, whyWrong: `Az ismeretlen számot osztjuk el ${ragVal(k)}, tehát az x áll elöl.` }
+                            ]),
+                            answer: x,
+                            hint: `Az x-et szétosztottuk ${k} egyenlő részre, és egy rész lett ${b}. Hányszor ekkora az egész x?`,
+                            steps: [
+                                { eq, op: `/ · ${k}`, why: `Itt szorzunk ${ragVal(k)} mindkét oldalon, mert az x-et ${k} egyenlő részre osztottuk, és egy rész lett ${b}. Az egész szám tehát ${k}-szer ennyi.` },
+                                { eq: `x = ${x}`, op: 'kész', why: `Mivel ${b} · ${k} = ${x}, a keresett szám ${x}.` }
+                            ],
+                            verify: `Ellenőrzés: ${x} : ${k} = ${b}. Pontosan annyi.`
+                        };
+                    }
+                }
+            },
+
+            // 03: Kétlépéses számtalálós
+            {
+                id: 'lvl3',
+                code: '03',
+                title: 'Kétlépéses számtalálós',
+                difficulty: 'Könnyű–közepes',
+                generate() {
+                    const isAdd = Math.random() < 0.55;
+                    const a = randInt(2, 6);
+                    const x = randInt(4, 13);
+                    const fluff = pick(FLUFF_TIMES);
+
+                    if (isAdd) {
+                        const b = randInt(3, 18);
+                        const c = a * x + b;
+                        const eq = `${a} · x + ${b} = ${c}`;
+                        return {
+                            tokens: [
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak a történet ideje, hagyd ki.` },
+                                { text: ' gondoltam ', clickable: false },
+                                { text: 'egy számra', clickable: true, useful: true },
+                                { text: '. ', clickable: false },
+                                { text: `Megszoroztam ${ragVal(a)}`, clickable: true, useful: true },
+                                { text: ', majd ', clickable: false },
+                                { text: `hozzáadtam ${ragT(b)}`, clickable: true, useful: true },
+                                { text: ', és ', clickable: false },
+                                { text: `${ragT(c)} kaptam`, clickable: true, useful: true },
+                                { text: '. Melyik számra gondoltam?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Gondolt szám', val: 'x' },
+                                { key: '1. lépés', val: `megszorozzuk ${ragVal(a)} → ${a} · x` },
+                                { key: '2. lépés', val: `hozzáadunk ${ragT(b)} → ${a} · x + ${b}` },
+                                { key: 'Eredmény', val: `= ${c}` }
+                            ],
+                            unknownNote: 'A gondolt szám legyen x.',
+                            unit: '',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `${a} · x − ${b} = ${c}`, whyWrong: `A szövegben hozzáadtunk ${ragT(b)}, nem elvettünk.` },
+                                { eq: `${b} · x + ${a} = ${c}`, whyWrong: `Összecserélted a szorzót (${a}) és a hozzáadott számot (${b}).` },
+                                { eq: `x + ${a} + ${b} = ${c}`, whyWrong: `Az x-et megszoroztuk ${ragVal(a)}, nem hozzáadtuk.` }
+                            ]),
+                            answer: x,
+                            hint: `Először tüntesd el a különálló + ${b} számot (vonj ki ${ragT(b)} a ${c}-ből), és csak utána ossz ${ragVal(a)}.`,
+                            steps: [
+                                { eq, op: `/ − ${b}`, why: `Itt először kivonunk ${ragT(b)} mindkét oldalból, mert el akarjuk tüntetni a különálló + ${b} számot, hogy bal oldalon csak a ${a} · x maradjon.` },
+                                { eq: `${a} · x = ${c - b}`, op: `/ : ${a}`, why: `Itt osztunk ${ragVal(a)} mindkét oldalon, mert ${a} darab x együtt ${c - b}, de nekünk csak 1 darab x kell.` },
+                                { eq: `x = ${x}`, op: 'kész', why: `${c - b} : ${a} = ${x}.` }
+                            ],
+                            verify: `Ellenőrzés: ${x} · ${a} = ${a * x}, ehhez hozzáadva ${ragT(b)} pontosan ${c} lesz.`
+                        };
+                    } else {
+                        const maxB = Math.min(16, a * x - 4);
+                        const b = randInt(3, Math.max(4, maxB));
+                        const c = a * x - b;
+                        const eq = `${a} · x − ${b} = ${c}`;
+                        return {
+                            tokens: [
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak körítés, nem szükséges a megoldáshoz.` },
+                                { text: ' gondoltam ', clickable: false },
+                                { text: 'egy számra', clickable: true, useful: true },
+                                { text: '. ', clickable: false },
+                                { text: `Vettem a ${szorzoReszet(a)}`, clickable: true, useful: true },
+                                { text: ', majd ', clickable: false },
+                                { text: `elvettem belőle ${ragT(b)}`, clickable: true, useful: true },
+                                { text: ', és ', clickable: false },
+                                { text: `${ragT(c)} kaptam`, clickable: true, useful: true },
+                                { text: '. Melyik ez a szám?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Gondolt szám', val: 'x' },
+                                { key: '1. lépés', val: `${szorzoResze(a)} → ${a} · x` },
+                                { key: '2. lépés', val: `elveszünk ${ragT(b)} → ${a} · x − ${b}` },
+                                { key: 'Eredmény', val: `= ${c}` }
+                            ],
+                            unknownNote: 'A gondolt szám legyen x.',
+                            unit: '',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `${a} · x + ${b} = ${c}`, whyWrong: `A szövegben elvettünk belőle ${ragT(b)}, tehát kivonás kell.` },
+                                { eq: `${b} · x − ${a} = ${c}`, whyWrong: `A szám ${szorzoReszet(a)} vettük (${a} · x), és ${ragT(b)} vontunk ki.` },
+                                { eq: `${a} · (x − ${b}) = ${c}`, whyWrong: `Először szoroztunk ${ragVal(a)}, és csak utána vettünk el ${ragT(b)}, ezért nem kell zárójel.` }
+                            ]),
+                            answer: x,
+                            hint: `Először add vissza a kivont ${ragT(b)} (${c} + ${b}), így megkapod mennyi a ${a} · x. Utána ossz ${ragVal(a)}.`,
+                            steps: [
+                                { eq, op: `/ + ${b}`, why: `Itt először hozzáadunk ${ragT(b)} mindkét oldalhoz, mert korábban elvettünk ${ragT(b)} a ${a} · x-ből. Így visszakapjuk, mennyi maga a ${a} · x.` },
+                                { eq: `${a} · x = ${c + b}`, op: `/ : ${a}`, why: `Itt osztunk ${ragVal(a)} mindkét oldalon, mert ${a} darab x együtt ${c + b}, nekünk pedig egyetlen x kell.` },
+                                { eq: `x = ${x}`, op: 'kész', why: `${c + b} : ${a} = ${x}.` }
+                            ],
+                            verify: `Ellenőrzés: ${x} · ${a} = ${a * x}, ebből elvéve ${ragT(b)} pontosan ${c} marad.`
+                        };
+                    }
+                }
+            },
+
+            // 04: Vásárlás a boltban
+            {
+                id: 'lvl4',
+                code: '04',
+                title: 'Vásárlás és számla',
+                difficulty: 'Közepes',
+                generate() {
+                    const pair = pick(PAIRS);
+                    const name = Math.random() < 0.5 ? pair.a : pair.b;
+                    const shop = pick(SHOPS);
+                    const place = pick(['a sarki boltban', 'iskola után', 'a büfében']);
+                    const count = randInt(3, 6);
+                    const x = pick([150, 200, 250, 300, 350, 400, 450, 500, 600]);
+                    let extra = pick([200, 250, 300, 350, 400, 500, 600, 750]);
+                    if (extra === x) extra += 100;
+                    const total = count * x + extra;
+                    const eq = `${count} · x + ${extra} = ${total}`;
+
+                    return {
+                        tokens: [
+                            { text: name, clickable: false },
+                            { text: ' ', clickable: false },
+                            { text: place, clickable: true, useful: false, reason: `A „${place}” csak a helyszín vagy időpont, nem része a számolásnak.` },
+                            { text: ' vásárolt ', clickable: false },
+                            { text: `${count} darab egyforma ${shop.item1Acc}`, clickable: true, useful: true },
+                            { text: ', és ', clickable: false },
+                            { text: `vett még egy ${extra} Ft-os ${shop.item2Acc}`, clickable: true, useful: true },
+                            { text: '. A pénztárnál ', clickable: false },
+                            { text: `összesen ${total} Ft-ot fizetett`, clickable: true, useful: true },
+                            { text: '. Mennyibe került ', clickable: false },
+                            { text: `egy ${shop.item1Nom}`, clickable: true, useful: true },
+                            { text: '?', clickable: false }
+                        ],
+                        extracted: [
+                            { key: `1 db ${shop.item1Nom} ára`, val: 'x Ft' },
+                            { key: `${count} db ${shop.item1Nom} ára`, val: `${count} · x Ft` },
+                            { key: `1 db ${shop.item2Nom}`, val: `+ ${extra} Ft` },
+                            { key: 'Teljes számla', val: `= ${total} Ft` }
+                        ],
+                        unknownNote: `Egyetlen ${shop.item1Nom} ára legyen x (forintban).`,
+                        unit: 'Ft',
+                        correctEq: eq,
+                        options: buildEqOptions(eq, [
+                            { eq: `${count} · x − ${extra} = ${total}`, whyWrong: `A ${shop.item2Nom} árát is kifizette, tehát hozzá kell adni, nem levonni.` },
+                            { eq: `x + ${count} + ${extra} = ${total}`, whyWrong: `${count} darabot vett a ${shop.item1Nom}-ből, ezért a darabszámot meg kell szorozni az árával (${count} · x).` },
+                            { eq: `${extra} · x + ${count} = ${total}`, whyWrong: `Nem ${extra} darabot vett, hanem ${count} darabot, a ${extra} Ft pedig a másik termék ára.` }
+                        ]),
+                        answer: x,
+                        hint: `Vond le a teljes számlából (${total} Ft) a ${shop.item2Nom} árát (${extra} Ft). Ami marad, az pontosan a ${count} db ${shop.item1Nom} ára.`,
+                        steps: [
+                            { eq, op: `/ − ${extra}`, why: `Itt kivonunk ${extra}-at mindkét oldalból, mert ha a teljes számlából levesszük a ${shop.item2Nom} árát, csak a ${count} darab ${shop.item1Nom} ára marad.` },
+                            { eq: `${count} · x = ${total - extra}`, op: `/ : ${count}`, why: `Itt osztunk ${ragVal(count)}, mert ${count} egyforma ${shop.item1Nom} került együtt ${total - extra} Ft-ba, így 1 darab ennek a ${count}-ed része.` },
+                            { eq: `x = ${x}`, op: 'kész', why: `Egy ${shop.item1Nom} ára ${x} Ft.` }
+                        ],
+                        verify: `Ellenőrzés: ${count} · ${x} Ft = ${count * x} Ft, plusz a ${extra} Ft-os ${shop.item2Nom} = ${total} Ft.`
+                    };
+                }
+            },
+
+            // 05: Összehasonlítás (több / kevesebb — beleértve a fordított megfogalmazást!)
+            {
+                id: 'lvl5',
+                code: '05',
+                title: 'Két ember összehasonlítása',
+                difficulty: 'Közepes',
+                generate() {
+                    const pair = pick(PAIRS);
+                    const item = pick(ITEMS);
+                    const fluff = pick(['egész nyáron', 'a szakkörön', 'az elmúlt hónapban']);
+                    const mode = randInt(0, 2); // 0: több (alap), 1: kevesebb (alap), 2: fordított "kevesebb" -> x + d!
+
+                    if (mode === 0) {
+                        const x = randInt(8, 24);
+                        const d = randInt(4, 16);
+                        const total = 2 * x + d;
+                        const eq = `x + (x + ${d}) = ${total}`;
+                        return {
+                            tokens: [
+                                { text: `${pair.a} és ${pair.b} `, clickable: false },
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak a háttérsztori, nem kell a matekhoz.` },
+                                { text: ' ', clickable: false },
+                                { text: `együtt ${total} ${item.acc}`, clickable: true, useful: true },
+                                { text: ' gyűjtött. ', clickable: false },
+                                { text: `${pair.aNak} ${ragVal(d)} több ${item.nom} van`, clickable: true, useful: true },
+                                { text: `, mint ${pair.bNak}. Hány ${item.nom} van `, clickable: false },
+                                { text: pair.bNak, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${pair.b} (őt kérdezi)`, val: 'x' },
+                                { key: `${pair.a}`, val: `${ragVal(d)} több van neki → x + ${d}` },
+                                { key: 'Együtt', val: `= ${total}` }
+                            ],
+                            unknownNote: `${pair.b} gyűjteménye legyen x. Képzeld el: ${pair.aNak} több van nála ${ragVal(d)}.`,
+                            unit: item.unit,
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + ${d} = ${total}`, whyWrong: `Ebben csak egy ember szerepel! A ${total} kettejük összege, tehát ${pair.b} (x) és ${pair.a} (x + ${d}) együtt.` },
+                                { eq: `x + (x − ${d}) = ${total}`, whyWrong: `${pair.aNak} több van ${pair.b}-nél, ezért hozzá kell adni ${ragT(d)}, nem elvenni.` },
+                                { eq: `2 · x − ${d} = ${total}`, whyWrong: `Összeadva x + (x + ${d}) az 2 · x + ${d}, nem pedig mínusz.` }
+                            ]),
+                            answer: x,
+                            hint: `Először vond össze a két x-et: x + x = 2 · x. Így 2 · x + ${d} = ${total}. Innen már ismerős a két lépés.`,
+                            steps: [
+                                { eq: `2 · x + ${d} = ${total}`, op: 'összevonás', why: `Itt összevonjuk az x-eket: ${pair.b} x-e és ${pair.a} x-e együtt 2 · x.` },
+                                { eq: `2 · x = ${total - d}`, op: `/ − ${d}`, why: `Itt kivonunk ${ragT(d)} mindkét oldalból, mert levesszük a többletet, így két egyenlő x marad.` },
+                                { eq: `x = ${x}`, op: `/ : 2`, why: `Itt osztunk 2-vel, mert két egyenlő rész ad ki ${ragT(total - d)}, nekünk pedig egyetlen x kell.` }
+                            ],
+                            verify: `Ellenőrzés: ${pair.b} = ${x}, ${pair.a} = ${x} + ${d} = ${x + d}. Együtt: ${x} + ${x + d} = ${total}.`
+                        };
+                    } else if (mode === 1) {
+                        const x = randInt(14, 30);
+                        const d = randInt(4, 12);
+                        const total = 2 * x - d;
+                        const eq = `x + (x − ${d}) = ${total}`;
+                        return {
+                            tokens: [
+                                { text: `${pair.a} és ${pair.b} `, clickable: false },
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak időmegjelölés, nem kell a számoláshoz.` },
+                                { text: ' ', clickable: false },
+                                { text: `összesen ${total} ${item.acc}`, clickable: true, useful: true },
+                                { text: ' gyűjtött. ', clickable: false },
+                                { text: `${pair.bNak} ${ragVal(d)} kevesebb ${item.nom} van`, clickable: true, useful: true },
+                                { text: `, mint ${pair.aNak}. Hány ${item.nom} van `, clickable: false },
+                                { text: pair.aNak, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${pair.a} (őt kérdezi)`, val: 'x' },
+                                { key: `${pair.b}`, val: `${ragVal(d)} kevesebb van neki → x − ${d}` },
+                                { key: 'Összesen', val: `= ${total}` }
+                            ],
+                            unknownNote: `${pair.a} gyűjteménye legyen x. Mivel ${pair.bNak} kevesebb van nála, ő x − ${d}.`,
+                            unit: item.unit,
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x − ${d} = ${total}`, whyWrong: `Kettejüknek van együtt ${total}, itt viszont csak egy ember szerepel.` },
+                                { eq: `x + (x + ${d}) = ${total}`, whyWrong: `Most ${pair.a} az x, és ${pair.bNak} kevesebb van nála, ezért x − ${d} kell.` },
+                                { eq: `${d} · x = ${total}`, whyWrong: `Nem ${d}-szerese, hanem ${ragVal(d)} kevesebb.` }
+                            ]),
+                            answer: x,
+                            hint: `Vond össze az x-eket: 2 · x − ${d} = ${total}. Utána add vissza a ${ragT(d)}, majd ossz 2-vel.`,
+                            steps: [
+                                { eq: `2 · x − ${d} = ${total}`, op: 'összevonás', why: `Itt összevonjuk a két x-et: x + x = 2 · x.` },
+                                { eq: `2 · x = ${total + d}`, op: `/ + ${d}`, why: `Itt hozzáadunk ${ragT(d)} mindkét oldalhoz, hogy eltűnjön a − ${d} a 2 · x mellől.` },
+                                { eq: `x = ${x}`, op: `/ : 2`, why: `Itt osztunk 2-vel, mert két egyenlő x értéke ${total + d}, egyetlen x ennek a fele.` }
+                            ],
+                            verify: `Ellenőrzés: ${pair.a} = ${x}, ${pair.b} = ${x} − ${d} = ${x - d}. Együtt: ${x} + ${x - d} = ${total}.`
+                        };
+                    } else {
+                        // FORDÍTOTT MEGFOGALMAZÁS: A szövegben "kevesebb" szerepel, de a kisebb az x -> a másik x + d!
+                        const x = randInt(8, 22);
+                        const d = randInt(4, 14);
+                        const total = 2 * x + d;
+                        const eq = `x + (x + ${d}) = ${total}`;
+                        return {
+                            tokens: [
+                                { text: `${pair.a} és ${pair.b} `, clickable: false },
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak körítés, hagyd figyelmen kívül.` },
+                                { text: ' ', clickable: false },
+                                { text: `együtt ${total} ${item.acc}`, clickable: true, useful: true },
+                                { text: ' gyűjtött. ', clickable: false },
+                                { text: `${pair.bNak} ${ragVal(d)} kevesebb ${item.nom} van`, clickable: true, useful: true },
+                                { text: `, mint ${pair.aNak}. Hány ${item.nom} van `, clickable: false },
+                                { text: pair.bNak, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${pair.b} (őt kérdezi)`, val: 'x' },
+                                { key: `${pair.a}`, val: `ha ${pair.bNak} kevesebb van, ${pair.aNak} TÖBB van → x + ${d}` },
+                                { key: 'Együtt', val: `= ${total}` }
+                            ],
+                            unknownNote: `Figyelj! ${pair.b} legyen x. Ha neki ${ragVal(d)} kevesebb van, mint ${pair.aNak}, akkor ${pair.aNak} mennyi van hozzá képest?`,
+                            unit: item.unit,
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + (x − ${d}) = ${total}`, whyWrong: `Csapda! Ne a „kevesebb” szót magold: ha ${pair.b} (x) a kisebb, akkor ${pair.a} a NAGYOBB, tehát neki x + ${d} van!` },
+                                { eq: `x − ${d} = ${total}`, whyWrong: `Kettejüknek van együtt ${total}, mindkét embernek szerepelnie kell az egyenletben.` },
+                                { eq: `2 · x − ${d} = ${total}`, whyWrong: `Mivel ${pair.b} a kisebb (x), ${pair.a} nagyobb nála (x + ${d}), ezért az összegük 2 · x + ${d}.` }
+                            ]),
+                            answer: x,
+                            hint: `Összevonva 2 · x + ${d} = ${total}. Először vonj ki ${ragT(d)}, aztán ossz 2-vel.`,
+                            steps: [
+                                { eq: `2 · x + ${d} = ${total}`, op: 'összevonás', why: `Mivel ${pair.b} = x és ${pair.a} = x + ${d}, az x-eket összevonva 2 · x + ${d}-t kapunk.` },
+                                { eq: `2 · x = ${total - d}`, op: `/ − ${d}`, why: `Itt kivonunk ${ragT(d)} mindkét oldalból, mert el akarjuk tüntetni a + ${d}-t a 2 · x mellől.` },
+                                { eq: `x = ${x}`, op: `/ : 2`, why: `Itt osztunk 2-vel, mert két darab x együtt ${total - d}, nekünk pedig egyetlen x kell.` }
+                            ],
+                            verify: `Ellenőrzés: ${pair.b} = ${x}, ${pair.a} = ${x + d}. ${pair.bNak} tényleg ${ragVal(d)} kevesebb van, és ${x} + ${x + d} = ${total}.`
+                        };
+                    }
+                }
+            },
+
+            // 06: Többszörös arányok
+            {
+                id: 'lvl6',
+                code: '06',
+                title: 'Többszörös arányok',
+                difficulty: 'Közepes–haladó',
+                generate() {
+                    const pair = pick(PAIRS);
+                    const item = pick(ITEMS);
+                    const fluff = pick(['az őszi szünetben', 'a polcon sorakozva', 'két dobozban']);
+                    const isSum = Math.random() < 0.6;
+
+                    if (isSum) {
+                        const k = randInt(2, 5);
+                        const x = randInt(5, 18);
+                        const total = (k + 1) * x;
+                        const eq = `x + ${k} · x = ${total}`;
+                        return {
+                            tokens: [
+                                { text: `${pair.a} és ${pair.b} `, clickable: false },
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak a háttér, nem számadat.` },
+                                { text: ' ', clickable: false },
+                                { text: `együtt ${total} ${item.acc}`, clickable: true, useful: true },
+                                { text: ' tart. ', clickable: false },
+                                { text: `${pair.aNak} ${szorzoAnnyi(k)} annyi ${item.nom} van`, clickable: true, useful: true },
+                                { text: `, mint ${pair.bNak}. Hány ${item.nom} van `, clickable: false },
+                                { text: pair.bNak, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${pair.b} (őt kérdezi)`, val: 'x (1 darab x)' },
+                                { key: `${pair.a}`, val: `${szorzoAnnyi(k)} annyi → ${k} · x` },
+                                { key: 'Együtt', val: `= ${total}` }
+                            ],
+                            unknownNote: `${pair.b} gyűjteménye legyen x, akkor ${pair.a} ennek ${k}-szerese (${k} · x).`,
+                            unit: item.unit,
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `${k} · x = ${total}`, whyWrong: `Ez csak ${pair.a} része lenne! A ${total} kettejüké együtt, tehát ${pair.b} (x) is bele kell számítson.` },
+                                { eq: `x + ${k} = ${total}`, whyWrong: `${szorzoAnnyi(k)} annyi van neki, nem ${ragVal(k)} több — itt szorzás van.` },
+                                { eq: `${k} · x − x = ${total}`, whyWrong: `Együtt (összeadva) van ${total}, nem a különbségük ennyi.` }
+                            ]),
+                            answer: x,
+                            hint: `Egy darab x és ${k} darab x együtt ${k + 1} darab x. Hánnyal kell elosztanod a ${ragT(total)}?`,
+                            steps: [
+                                { eq: `${k + 1} · x = ${total}`, op: 'összevonás', why: `Itt összevonjuk az x-eket: az 1 darab x (a sima x) és a ${k} darab x együtt ${k + 1} · x.` },
+                                { eq: `x = ${x}`, op: `/ : ${k + 1}`, why: `Itt osztunk ${ragVal(k + 1)}, mert ${k + 1} egyenlő rész teszi ki a ${ragT(total)}, nekünk pedig 1 rész (x) kell.` }
+                            ],
+                            verify: `Ellenőrzés: ${pair.b} = ${x}, ${pair.a} = ${k} · ${x} = ${k * x}. Együtt: ${x} + ${k * x} = ${total}.`
+                        };
+                    } else {
+                        const k = randInt(3, 6);
+                        const x = randInt(4, 15);
+                        const diff = (k - 1) * x;
+                        const eq = `${k} · x − x = ${diff}`;
+                        return {
+                            tokens: [
+                                { text: fluff.charAt(0).toUpperCase() + fluff.slice(1), clickable: true, useful: false, reason: `A „${fluff}” csak körítés, nincs rá szükség a számoláshoz.` },
+                                { text: ' ', clickable: false },
+                                { text: `${pair.aNak} ${szorzoAnnyi(k)} annyi ${item.nom} van`, clickable: true, useful: true },
+                                { text: `, mint ${pair.bNak}. ${pair.aNak} pontosan `, clickable: false },
+                                { text: `${ragVal(diff)} többje van`, clickable: true, useful: true },
+                                { text: `, mint ${pair.bNak}. Hány ${item.nom} van `, clickable: false },
+                                { text: pair.bNak, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${pair.b} (őt kérdezi)`, val: 'x' },
+                                { key: `${pair.a}`, val: `${szorzoAnnyi(k)} annyi → ${k} · x` },
+                                { key: 'Különbségük', val: `${pair.a} − ${pair.b} = ${diff}` }
+                            ],
+                            unknownNote: `${pair.b} legyen x, ${pair.a} pedig ${k} · x. Kettőjük különbsége ${diff}.`,
+                            unit: item.unit,
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `${k} · x + x = ${diff}`, whyWrong: `A ${diff} nem az összegük, hanem hogy mennyivel van több ${pair.aNak} (vagyis a különbségük).` },
+                                { eq: `${k} · x = ${diff}`, whyWrong: `Nem összesen ${diff} van ${pair.aNak}, hanem ennyivel TÖBB, mint ${pair.bNak}.` },
+                                { eq: `x + ${diff} = ${k}`, whyWrong: `A ${k} egy szorzó, nem pedig darabszám.` }
+                            ]),
+                            answer: x,
+                            hint: `${k} darab x-ből ha elveszel 1 darab x-et, marad ${k - 1} · x. Utána oszd el a ${ragT(diff)} ${ragVal(k - 1)}.`,
+                            steps: [
+                                { eq: `${k - 1} · x = ${diff}`, op: 'összevonás', why: `Itt összevonjuk a bal oldalt: ${k} darab x-ből elveszünk 1 darab x-et, így marad ${k - 1} · x.` },
+                                { eq: `x = ${x}`, op: `/ : ${k - 1}`, why: `Itt osztunk ${ragVal(k - 1)}, mert a kettőjük közötti ${diff} különbség pontosan ${k - 1} darab x-et jelent.` }
+                            ],
+                            verify: `Ellenőrzés: ${pair.b} = ${x}, ${pair.a} = ${k} · ${x} = ${k * x}. Különbségük: ${k * x} − ${x} = ${diff}.`
+                        };
+                    }
+                }
+            },
+
+            // 07: Téglalap kerülete
+            {
+                id: 'lvl7',
+                code: '07',
+                title: 'Téglalap kerülete',
+                difficulty: 'Haladó',
+                generate() {
+                    const isAdd = Math.random() < 0.55;
+                    const fluff = pick(['Egy piros kartonból kivágott', 'A füzetbe ceruzával rajzolt', 'Egy zöld poszter formájú']);
+
+                    if (isAdd) {
+                        const x = randInt(4, 14);
+                        const d = randInt(2, 9);
+                        const K = 4 * x + 2 * d;
+                        const eq = `2 · x + 2 · (x + ${d}) = ${K}`;
+                        return {
+                            tokens: [
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak leírás, nem számít a kerületnél.` },
+                                { text: ' téglalap ', clickable: false },
+                                { text: `kerülete ${K} cm`, clickable: true, useful: true },
+                                { text: '. A ', clickable: false },
+                                { text: `hosszabbik oldala ${d} cm-rel hosszabb`, clickable: true, useful: true },
+                                { text: ' a rövidebbiknél. Hány cm a ', clickable: false },
+                                { text: 'rövidebbik oldal', clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Rövidebb oldal', val: 'x (ebből 2 db van)' },
+                                { key: 'Hosszabb oldal', val: `x + ${d} (ebből is 2 db van)` },
+                                { key: 'Kerület', val: `mind a 4 oldal összege = ${K} cm` }
+                            ],
+                            visualHtml: buildRectSVG('x', `x + ${d}`),
+                            unknownNote: 'A rövidebb oldal legyen x. Ne felejtsd el, hogy a kerülethez mind a 4 oldalt összeadjuk.',
+                            unit: 'cm',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + (x + ${d}) = ${K}`, whyWrong: `Ez csak két oldal (a fél kerület)! A téglalapnak 2 rövid és 2 hosszú oldala van.` },
+                                { eq: `2 · x + ${d} = ${K}`, whyWrong: `A hosszabbik oldal (x + ${d}) kétszer szerepel, tehát a ${d} cm-t is kétszer kell számolni.` },
+                                { eq: `4 · x + ${d} = ${K}`, whyWrong: `Mivel 2 hosszabb oldal van, a + ${d} cm-ből is kettő lesz (+ ${2 * d}), nem csak egy.` }
+                            ]),
+                            answer: x,
+                            hint: `Bontsd fel a zárójelet: 2 · (x + ${d}) = 2 · x + ${2 * d}. Így összesen 4 · x + ${2 * d} = ${K}.`,
+                            steps: [
+                                { eq: `2 · x + 2 · x + ${2 * d} = ${K}`, op: 'zárójel felbontása', why: `Itt a zárójel mindkét tagját megszorozzuk 2-vel, mert két darab (x + ${d}) oldalunk van: ez 2 · x és 2 · ${d} = ${2 * d}.` },
+                                { eq: `4 · x + ${2 * d} = ${K}`, op: 'összevonás', why: `Itt összevonjuk az x-eket: 2 · x + 2 · x együtt 4 · x.` },
+                                { eq: `4 · x = ${K - 2 * d}`, op: `/ − ${2 * d}`, why: `Itt kivonunk ${ragT(2 * d)} mindkét oldalból, mert el akarjuk tüntetni a + ${2 * d}-t, hogy csak a 4 · x maradjon.` },
+                                { eq: `x = ${x}`, op: `/ : 4`, why: `Itt osztunk 4-gyel, mert négy egyenlő x teszi ki a ${ragT(K - 2 * d)}, nekünk pedig 1 darab x kell.` }
+                            ],
+                            verify: `Ellenőrzés: rövidebb = ${x} cm, hosszabb = ${x + d} cm. Kerület: 2·${x} + 2·${x + d} = ${K} cm.`
+                        };
+                    } else {
+                        const x = randInt(3, 12);
+                        const k = randInt(2, 4);
+                        const totalX = 2 + 2 * k;
+                        const K = totalX * x;
+                        const eq = `2 · x + 2 · (${k} · x) = ${K}`;
+                        return {
+                            tokens: [
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak leírás, nem befolyásolja a kerületet.` },
+                                { text: ' téglalap ', clickable: false },
+                                { text: `kerülete ${K} cm`, clickable: true, useful: true },
+                                { text: '. A ', clickable: false },
+                                { text: `hosszabbik oldala ${szorzoResze(k)}`, clickable: true, useful: true },
+                                { text: ' a rövidebbiknek. Hány cm a ', clickable: false },
+                                { text: 'rövidebbik oldal', clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: 'Rövidebb oldal', val: 'x (2 db)' },
+                                { key: 'Hosszabb oldal', val: `${k} · x (2 db)` },
+                                { key: 'Kerület', val: `mind a 4 oldal összege = ${K} cm` }
+                            ],
+                            visualHtml: buildRectSVG('x', `${k} · x`),
+                            unknownNote: 'A rövidebb oldal legyen x, a hosszabb ennek többszöröse. Mindkettőből 2 darab van.',
+                            unit: 'cm',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + ${k} · x = ${K}`, whyWrong: `Ez csak két oldal összege! A kerülethez mind a 4 oldal kell.` },
+                                { eq: `2 · x + ${k} · x = ${K}`, whyWrong: `A hosszabbik oldalból (${k} · x) is 2 darab van, nem csak egy.` },
+                                { eq: `2 · (x + ${k}) = ${K}`, whyWrong: `A hosszabb oldal ${szorzoResze(k)}, tehát szorozni kell ${ragVal(k)}, nem hozzáadni.` }
+                            ]),
+                            answer: x,
+                            hint: `Szorozd össze: 2 · (${k} · x) = ${2 * k} · x. Így összesen 2 · x + ${2 * k} · x = ${totalX} · x van a bal oldalon.`,
+                            steps: [
+                                { eq: `2 · x + ${2 * k} · x = ${K}`, op: 'szorzás', why: `Itt összevonjuk a szorzást: két darab ${k} · x oldal együtt ${2 * k} · x.` },
+                                { eq: `${totalX} · x = ${K}`, op: 'összevonás', why: `Itt összeadjuk az x-eket: 2 · x + ${2 * k} · x együtt ${totalX} · x.` },
+                                { eq: `x = ${x}`, op: `/ : ${totalX}`, why: `Itt osztunk ${ragVal(totalX)}, mert ${totalX} egyenlő x adja ki a ${K} cm kerületet.` }
+                            ],
+                            verify: `Ellenőrzés: rövidebb = ${x} cm, hosszabb = ${k * x} cm. Kerület: 2·${x} + 2·${k * x} = ${K} cm.`
+                        };
+                    }
+                }
+            },
+
+            // 08: Életkoros feladatok
+            {
+                id: 'lvl8',
+                code: '08',
+                title: 'Életkorok az időben',
+                difficulty: 'Kihívás',
+                generate() {
+                    const isMul = Math.random() < 0.6;
+                    const parent = Math.random() < 0.5
+                        ? { p: 'Az édesapa', c: 'a fia', cNom: 'Fiú', pNom: 'Apa' }
+                        : { p: 'Az édesanya', c: 'a lánya', cNom: 'Lány', pNom: 'Anya' };
+                    const fluff = pick(['Egy régi családi fotót nézegetve kiszámolták, hogy', 'A családi vacsoránál kiderült, hogy', 'Ma ünneplik a névnapjukat, és']);
+
+                    if (isMul) {
+                        const k = randInt(3, 4);
+                        const x = randInt(6, 13);
+                        const years = randInt(3, 8);
+                        const sumFuture = (k + 1) * x + 2 * years;
+                        const eq = `(x + ${years}) + (${k} · x + ${years}) = ${sumFuture}`;
+
+                        return {
+                            tokens: [
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak bevezető mese, nem kell az egyenlethez.` },
+                                { text: ` ${parent.p.toLowerCase()} `, clickable: false },
+                                { text: `most ${szorzoAnnyi(k)} annyi idős`, clickable: true, useful: true },
+                                { text: `, mint ${parent.c}. `, clickable: false },
+                                { text: `${years} év múlva`, clickable: true, useful: true },
+                                { text: ' kettejük életkorának ', clickable: false },
+                                { text: `összege ${sumFuture} év lesz`, clickable: true, useful: true },
+                                { text: '. Hány éves ', clickable: false },
+                                { text: `most ${parent.c}`, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${parent.cNom} most`, val: 'x éves' },
+                                { key: `${parent.pNom} most`, val: `${k} · x éves` },
+                                { key: `${years} év múlva`, val: `mindketten öregszenek ${years} évet: (x + ${years}) és (${k} · x + ${years})` },
+                                { key: 'Jövőbeli összeg', val: `= ${sumFuture} év` }
+                            ],
+                            visualHtml: buildAgeTable(parent.cNom, parent.pNom, 'x', `${k} · x`, years),
+                            unknownNote: `${parent.cNom} MOSTANI kora legyen x. Gondolj bele: ${years} év múlva mindkét ember ${years} évvel idősebb lesz.`,
+                            unit: 'éves',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + ${k} · x + ${years} = ${sumFuture}`, whyWrong: `Itt csak az egyik emberhez adtad hozzá a ${years} évet! Az idő mindkettejüknek telik, tehát kétszer kell hozzáadni.` },
+                                { eq: `x + ${k} · x = ${sumFuture}`, whyWrong: `A ${sumFuture} év nem a mostani összegük, hanem a ${years} évvel későbbi.` },
+                                { eq: `(x − ${years}) + (${k} · x − ${years}) = ${sumFuture}`, whyWrong: `${years} év múlva idősebbek lesznek, tehát hozzá kell adni a ${years} évet, nem kivonni.` }
+                            ]),
+                            answer: x,
+                            hint: `Vond össze külön az x-eket (${k + 1} · x) és külön az éveket (${years} + ${years} = ${2 * years}). Így ${k + 1} · x + ${2 * years} = ${sumFuture}.`,
+                            steps: [
+                                { eq: `${k + 1} · x + ${2 * years} = ${sumFuture}`, op: 'összevonás', why: `Itt összevonjuk az x-eket (x + ${k} · x = ${k + 1} · x) és a számokat (${years} + ${years} = ${2 * years}, mert mindkét emberhez hozzáadtuk a ${years} évet).` },
+                                { eq: `${k + 1} · x = ${sumFuture - 2 * years}`, op: `/ − ${2 * years}`, why: `Itt kivonunk ${ragT(2 * years)} mindkét oldalból, mert így megkapjuk, mennyi a kettőjük mostani életkorának összege.` },
+                                { eq: `x = ${x}`, op: `/ : ${k + 1}`, why: `Itt osztunk ${ragVal(k + 1)}, mert a mostani koruk együtt ${k + 1} darab x-et tesz ki.` }
+                            ],
+                            verify: `Ellenőrzés: most ${x} és ${k * x} évesek. ${years} év múlva ${x + years} és ${k * x + years} évesek lesznek, összegük: ${sumFuture} év.`
+                        };
+                    } else {
+                        const x = randInt(6, 14);
+                        const diff = randInt(24, 32);
+                        const years = randInt(3, 7);
+                        const sumFuture = 2 * x + diff + 2 * years;
+                        const constSum = diff + 2 * years;
+                        const eq = `(x + ${years}) + (x + ${diff} + ${years}) = ${sumFuture}`;
+
+                        return {
+                            tokens: [
+                                { text: fluff, clickable: true, useful: false, reason: `A „${fluff}” csak körítés, nem része a számolásnak.` },
+                                { text: ` ${parent.p.toLowerCase()} `, clickable: false },
+                                { text: `${diff} évvel idősebb`, clickable: true, useful: true },
+                                { text: `, mint ${parent.c}. `, clickable: false },
+                                { text: `${years} év múlva`, clickable: true, useful: true },
+                                { text: ' kettejük életkorának ', clickable: false },
+                                { text: `összege ${sumFuture} év lesz`, clickable: true, useful: true },
+                                { text: '. Hány éves ', clickable: false },
+                                { text: `most ${parent.c}`, clickable: true, useful: true },
+                                { text: '?', clickable: false }
+                            ],
+                            extracted: [
+                                { key: `${parent.cNom} most`, val: 'x éves' },
+                                { key: `${parent.pNom} most`, val: `x + ${diff} éves` },
+                                { key: `${years} év múlva`, val: `mindketten +${years} évet kapnak: (x + ${years}) és (x + ${diff} + ${years})` },
+                                { key: 'Jövőbeli összeg', val: `= ${sumFuture} év` }
+                            ],
+                            visualHtml: buildAgeTable(parent.cNom, parent.pNom, 'x', `x + ${diff}`, years),
+                            unknownNote: `${parent.cNom} MOSTANI kora legyen x. ${years} év múlva mindkét ember kora nő ${years} évvel.`,
+                            unit: 'éves',
+                            correctEq: eq,
+                            options: buildEqOptions(eq, [
+                                { eq: `x + (x + ${diff}) + ${years} = ${sumFuture}`, whyWrong: `Itt csak egyszer adtad hozzá a ${years} évet, pedig mindkét ember ${years} évvel idősebb lesz.` },
+                                { eq: `x + (x + ${diff}) = ${sumFuture}`, whyWrong: `Ez a mostani koruk összege lenne, de a ${sumFuture} év csak ${years} év múlva lesz igaz.` },
+                                { eq: `2 · x + ${diff} = ${sumFuture}`, whyWrong: `Kimaradt a kétszer ${years} év, ami közben eltelik.` }
+                            ]),
+                            answer: x,
+                            hint: `Add össze az x-eket (2 · x) és a számokat (${years} + ${diff} + ${years} = ${constSum}). Így 2 · x + ${constSum} = ${sumFuture}.`,
+                            steps: [
+                                { eq: `2 · x + ${constSum} = ${sumFuture}`, op: 'összevonás', why: `Itt összevonjuk az x-eket (x + x = 2 · x) és az összes számot (${years} + ${diff} + ${years} = ${constSum}).` },
+                                { eq: `2 · x = ${sumFuture - constSum}`, op: `/ − ${constSum}`, why: `Itt kivonunk ${ragT(constSum)} mindkét oldalból, mert el akarjuk tüntetni a + ${constSum} számot a 2 · x mellől.` },
+                                { eq: `x = ${x}`, op: `/ : 2`, why: `Itt osztunk 2-vel, mert két darab x együtt ${sumFuture - constSum}, nekünk pedig egyetlen x kell.` }
+                            ],
+                            verify: `Ellenőrzés: most ${x} és ${x + diff} évesek. ${years} év múlva ${x + years} és ${x + diff + years} évesek lesznek, összegük: ${sumFuture} év.`
+                        };
+                    }
+                }
+            }
+        ];
+
+        /* ==============================================================
+           4. ÁLLAPOTKEZELÉS ÉS MENTÉS
+           ============================================================== */
+        const STORAGE_KEY = 'egyenlet07_alter_progress_v1';
+        const STREAK_GOAL = 2;
+
+        let progress = { streaks: {}, completed: {} };
+        let currentLevelIdx = 0;
+        let currentProb = null;
+        let selectedTokens = new Set();
+        let step1Done = false;
+        let step2Done = false;
+        let step3Done = false;
+        let hadMistake = false;
+
+        function loadProgress() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const p = JSON.parse(raw);
+                    if (p && typeof p === 'object') {
+                        progress.streaks = p.streaks || {};
+                        progress.completed = p.completed || {};
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            } catch (e) {}
+        }
+
+        function completedCount() {
+            return LEVELS.filter(l => progress.completed[l.id]).length;
+        }
+
+        /* ==============================================================
+           5. NÉZETVÁLTÁS ÉS SZINTVÁLASZTÓ
+           ============================================================== */
+        function switchView(view) {
+            const learn = document.getElementById('view-learn');
+            const prac = document.getElementById('view-practice');
+            const btnL = document.getElementById('nav-learn');
+            const btnP = document.getElementById('nav-practice');
+
+            if (view === 'learn') {
+                learn.classList.remove('hidden');
+                prac.classList.add('hidden');
+                btnL.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors bg-red-600 text-white';
+                btnP.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors text-zinc-400 hover:text-zinc-100 flex items-center gap-2';
+            } else {
+                learn.classList.add('hidden');
+                prac.classList.remove('hidden');
+                btnP.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors bg-red-600 text-white flex items-center gap-2';
+                btnL.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors text-zinc-400 hover:text-zinc-100';
+                if (!currentProb) selectLevel(currentLevelIdx);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderLevelStrip() {
+            const doneCount = completedCount();
+            document.getElementById('nav-count').textContent = `${doneCount}/${LEVELS.length}`;
+
+            const strip = document.getElementById('level-strip');
+            strip.innerHTML = LEVELS.map((lvl, idx) => {
+                const active = idx === currentLevelIdx;
+                const done = !!progress.completed[lvl.id];
+                const streak = progress.streaks[lvl.id] || 0;
+
+                let cls = 'bg-noir-900 border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200';
+                if (active) {
+                    cls = 'bg-red-600 border-red-500 text-white';
+                } else if (done) {
+                    cls = 'bg-noir-900 border-white/70 text-white hover:border-white';
+                }
+
+                return `
+                    <button onclick="selectLevel(${idx})" title="${lvl.title}"
+                        class="relative py-2.5 px-2 rounded-lg border font-mono text-sm font-bold transition-all flex flex-col items-center justify-center gap-1 ${cls}">
+                        <span>${lvl.code}</span>
+                        <span class="text-[10px] font-normal ${active ? 'text-red-100' : done ? 'text-zinc-300' : 'text-zinc-600'}">
+                            ${done ? 'KÉSZ' : `${streak}/${STREAK_GOAL}`}
+                        </span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function updateHeaderInfo() {
+            const lvl = LEVELS[currentLevelIdx];
+            const done = !!progress.completed[lvl.id];
+            const streak = progress.streaks[lvl.id] || 0;
+
+            document.getElementById('lvl-code').textContent = `${lvl.code} / 0${LEVELS.length}`;
+            document.getElementById('lvl-diff').textContent = lvl.difficulty;
+            document.getElementById('lvl-title').textContent = lvl.title;
+
+            const doneTag = document.getElementById('lvl-done-tag');
+            if (done) doneTag.classList.remove('hidden');
+            else doneTag.classList.add('hidden');
+
+            const filled = done ? STREAK_GOAL : streak;
+            let barsHtml = '';
+            for (let i = 0; i < STREAK_GOAL; i++) {
+                barsHtml += `<span class="w-8 h-2 rounded-sm transition-colors ${
+                    i < filled ? (done ? 'bg-white' : 'bg-red-500') : 'bg-zinc-800'
+                }"></span>`;
+            }
+            document.getElementById('streak-bars').innerHTML = barsHtml;
+        }
+
+        function selectLevel(idx) {
+            currentLevelIdx = idx;
+            renderLevelStrip();
+            updateHeaderInfo();
+            generateNewProblem();
+        }
+
+        /* ==============================================================
+           6. FELADAT GENERÁLÁS ÉS A 3 LINEÁRIS LÉPÉS KEZELÉSE
+           ============================================================== */
+        function generateNewProblem() {
+            const lvl = LEVELS[currentLevelIdx];
+            const prevKey = currentProb ? currentProb.correctEq : '';
+            let next = lvl.generate();
+            for (let i = 0; i < 6 && next.correctEq === prevKey; i++) {
+                next = lvl.generate();
+            }
+            currentProb = next;
+
+            selectedTokens = new Set();
+            step1Done = false;
+            step2Done = false;
+            step3Done = false;
+            hadMistake = false;
+
+            // Lépés 1 visszaállítása
+            document.getElementById('s1-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-red-500';
+            document.getElementById('s1-tag').textContent = 'Lépés 01 — Adatok kiszedése';
+            document.getElementById('s1-status').textContent = 'Kijelölve: 0';
+            document.getElementById('s1-actions').classList.remove('hidden');
+            document.getElementById('s1-feedback').classList.add('hidden');
+            document.getElementById('s1-summary').classList.add('hidden');
+            renderInteractiveStory();
+
+            // Lépés 2, 3, siker, megoldás elrejtése
+            document.getElementById('card-step-2').classList.add('hidden');
+            document.getElementById('s2-feedback').classList.add('hidden');
+            document.getElementById('s2-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-red-500';
+            document.getElementById('s2-tag').textContent = 'Lépés 02 — Egyenlet felírása';
+
+            document.getElementById('card-step-3').classList.add('hidden');
+            document.getElementById('s3-hint').classList.add('hidden');
+            document.getElementById('s3-feedback').classList.add('hidden');
+            document.getElementById('s3-helpers').classList.remove('hidden');
+            document.getElementById('s3-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-red-500';
+            document.getElementById('s3-tag').textContent = 'Lépés 03 — Megoldás';
+
+            const inp = document.getElementById('ans-input');
+            inp.value = '';
+            inp.disabled = false;
+            document.getElementById('btn-check-3').disabled = false;
+            document.getElementById('ans-unit').textContent = currentProb.unit;
+
+            document.getElementById('card-success').classList.add('hidden');
+            document.getElementById('card-solution').classList.add('hidden');
+        }
+
+        function renderInteractiveStory(wrongSet = new Set()) {
+            const container = document.getElementById('interactive-story');
+            container.innerHTML = currentProb.tokens.map((tok, idx) => {
+                if (!tok.clickable) {
+                    return `<span>${tok.text}</span>`;
+                }
+                if (step1Done) {
+                    const cls = tok.useful ? 'chunk-btn locked-useful' : 'chunk-btn locked-fluff';
+                    return `<button type="button" disabled class="${cls}">${tok.text}</button>`;
+                }
+                let cls = 'chunk-btn';
+                if (wrongSet.has(idx)) cls += ' wrong-pick';
+                else if (selectedTokens.has(idx)) cls += ' selected';
+                return `<button type="button" onclick="toggleToken(${idx})" class="${cls}">${tok.text}</button>`;
+            }).join('');
+        }
+
+        function toggleToken(idx) {
+            if (step1Done) return;
+            if (selectedTokens.has(idx)) selectedTokens.delete(idx);
+            else selectedTokens.add(idx);
+
+            document.getElementById('s1-status').textContent = `Kijelölve: ${selectedTokens.size}`;
+            document.getElementById('s1-feedback').classList.add('hidden');
+            renderInteractiveStory();
+        }
+
+        function checkStep1() {
+            if (step1Done) return;
+            const fb = document.getElementById('s1-feedback');
+
+            const wrongIndices = new Set();
+            const wrongReasons = [];
+            let missedCount = 0;
+
+            currentProb.tokens.forEach((tok, idx) => {
+                if (!tok.clickable) return;
+                const picked = selectedTokens.has(idx);
+                if (tok.useful && !picked) {
+                    missedCount++;
+                } else if (!tok.useful && picked) {
+                    wrongIndices.add(idx);
+                    wrongReasons.push(tok.reason);
+                }
+            });
+
+            if (wrongIndices.size === 0 && missedCount === 0) {
+                // Sikerült az 1. lépés!
+                step1Done = true;
+                fb.classList.add('hidden');
+                document.getElementById('s1-actions').classList.add('hidden');
+                document.getElementById('s1-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-white';
+                document.getElementById('s1-tag').textContent = 'Lépés 01 — Kész';
+                document.getElementById('s1-status').textContent = 'Minden hasznos adat megvan';
+                renderInteractiveStory();
+                showStep1SummaryAndUnlockStep2();
+            } else {
+                // Visszajelzés pontos magyarázattal
+                markMistake();
+                renderInteractiveStory(wrongIndices);
+
+                const messages = [];
+                if (wrongReasons.length > 0) {
+                    messages.push(...wrongReasons.map(r => `<div>— ${r} <span class="text-zinc-400">(Kattints rá újra a levételhez.)</span></div>`));
+                }
+                if (missedCount > 0) {
+                    messages.push(`<div>— Még <span class="text-white font-semibold">${missedCount} hasznos adat</span> kimaradt a szövegből. Nézd meg, maradt-e még fontos szám, kapcsolat vagy a kérdés.</div>`);
+                }
+
+                fb.className = 'p-4 rounded-lg bg-crimson-950 border border-red-500/50 text-sm text-zinc-200 space-y-1.5 animate-slide';
+                fb.innerHTML = messages.join('');
+            }
+        }
+
+        function showStep1SummaryAndUnlockStep2() {
+            // Összegzés kirajzolása
+            const summaryBox = document.getElementById('s1-summary');
+            summaryBox.classList.remove('hidden');
+            document.getElementById('s1-extracted-list').innerHTML = currentProb.extracted.map(item => `
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 p-2.5 rounded-lg bg-noir-950 border border-zinc-800">
+                    <span class="font-mono text-xs text-red-400 sm:w-40 shrink-0">${item.key}</span>
+                    <span class="text-zinc-200 font-medium">${item.val}</span>
+                </div>
+            `).join('');
+            document.getElementById('s1-visual').innerHTML = currentProb.visualHtml || '';
+
+            // 2. lépés megnyitása
+            const card2 = document.getElementById('card-step-2');
+            card2.classList.remove('hidden');
+            document.getElementById('s2-unknown-note').textContent = currentProb.unknownNote;
+
+            document.getElementById('eq-options').innerHTML = currentProb.options.map((opt, idx) => `
+                <button id="eq-btn-${idx}" onclick="checkStep2(${idx})"
+                    class="w-full text-left px-5 py-4 rounded-lg bg-noir-950 border border-zinc-800 hover:border-red-500 font-mono text-base sm:text-lg font-semibold text-zinc-100 transition-all flex items-center justify-between gap-3">
+                    <span>${opt.eq}</span>
+                    <span class="text-xs font-mono text-zinc-600">0${idx + 1}</span>
+                </button>
+            `).join('');
+
+            card2.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function checkStep2(idx) {
+            if (step2Done) return;
+            const opt = currentProb.options[idx];
+            const btn = document.getElementById(`eq-btn-${idx}`);
+            const fb = document.getElementById('s2-feedback');
+
+            if (opt.correct) {
+                step2Done = true;
+                currentProb.options.forEach((_, i) => {
+                    const b = document.getElementById(`eq-btn-${i}`);
+                    b.disabled = true;
+                    if (i === idx) {
+                        b.className = 'w-full text-left px-5 py-4 rounded-lg bg-red-600/15 border border-white font-mono text-base sm:text-lg font-bold text-white flex items-center justify-between gap-3';
+                    } else {
+                        b.className = 'w-full text-left px-5 py-4 rounded-lg bg-noir-950/40 border border-zinc-900 font-mono text-base sm:text-lg text-zinc-600 flex items-center justify-between gap-3';
+                    }
+                });
+
+                document.getElementById('s2-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-white';
+                document.getElementById('s2-tag').textContent = 'Lépés 02 — Kész';
+                fb.classList.add('hidden');
+
+                // 3. lépés megnyitása
+                document.getElementById('locked-eq').textContent = currentProb.correctEq;
+                const card3 = document.getElementById('card-step-3');
+                card3.classList.remove('hidden');
+                card3.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                setTimeout(() => document.getElementById('ans-input').focus(), 180);
+            } else {
+                markMistake();
+                btn.disabled = true;
+                btn.className = 'w-full text-left px-5 py-4 rounded-lg bg-crimson-950/60 border border-dashed border-red-500/60 font-mono text-base sm:text-lg text-zinc-500 line-through flex items-center justify-between gap-3';
+
+                fb.className = 'p-4 rounded-lg bg-crimson-950 border border-red-500/50 text-sm text-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-slide';
+                fb.innerHTML = `
+                    <span><strong class="text-red-400">Nem ez az:</strong> ${opt.whyWrong}</span>
+                    <button onclick="revealFullSolution(true)" class="shrink-0 px-3 py-1.5 rounded-md bg-noir-950 border border-zinc-700 hover:border-zinc-500 text-xs font-mono text-zinc-300">
+                        Megoldás mutatása
+                    </button>
+                `;
+            }
+        }
+
+        function showHint() {
+            const box = document.getElementById('s3-hint');
+            box.classList.remove('hidden');
+            box.innerHTML = `<span class="font-mono text-xs uppercase text-red-400 block mb-1">Tipp</span>${currentProb.hint}`;
+        }
+
+        function checkStep3() {
+            if (step3Done) return;
+            const inp = document.getElementById('ans-input');
+            const raw = inp.value.trim();
+            const fb = document.getElementById('s3-feedback');
+
+            if (raw === '') {
+                fb.className = 'p-3.5 rounded-lg bg-noir-950 border border-zinc-700 text-sm text-zinc-300 animate-slide';
+                fb.textContent = 'Írj be egy számot a mezőbe.';
+                inp.focus();
+                return;
+            }
+
+            const val = Number(raw);
+            if (val === currentProb.answer) {
+                step3Done = true;
+                inp.disabled = true;
+                document.getElementById('btn-check-3').disabled = true;
+                document.getElementById('s3-helpers').classList.add('hidden');
+                fb.classList.add('hidden');
+
+                document.getElementById('s3-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-white';
+                document.getElementById('s3-tag').textContent = 'Lépés 03 — Kész';
+
+                handleWin();
+            } else {
+                markMistake();
+                fb.className = 'p-4 rounded-lg bg-crimson-950 border border-red-500/50 text-sm text-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-slide';
+                fb.innerHTML = `
+                    <span>A <strong class="font-mono text-white">${val}</strong> nem jó megoldás. Ellenőrizd a számolásod, vagy nézd meg a lépéseket!</span>
+                    <button onclick="revealFullSolution(true)" class="shrink-0 px-3 py-1.5 rounded-md bg-noir-950 border border-zinc-700 hover:border-zinc-500 text-xs font-mono text-zinc-300">
+                        Teljes levezetés
+                    </button>
+                `;
+                inp.select();
+            }
+        }
+
+        function markMistake() {
+            if (!hadMistake) {
+                hadMistake = true;
+                const lvl = LEVELS[currentLevelIdx];
+                if (!progress.completed[lvl.id]) {
+                    progress.streaks[lvl.id] = 0;
+                    saveProgress();
+                    renderLevelStrip();
+                    updateHeaderInfo();
+                }
+            }
+        }
+
+        function handleWin() {
+            const lvl = LEVELS[currentLevelIdx];
+            const alreadyDone = !!progress.completed[lvl.id];
+            let justMastered = false;
+
+            if (!hadMistake && !alreadyDone) {
+                const nextStreak = (progress.streaks[lvl.id] || 0) + 1;
+                progress.streaks[lvl.id] = nextStreak;
+                if (nextStreak >= STREAK_GOAL) {
+                    progress.completed[lvl.id] = true;
+                    justMastered = true;
+                }
+                saveProgress();
+                renderLevelStrip();
+                updateHeaderInfo();
+            }
+
+            const card = document.getElementById('card-success');
+            const badge = document.getElementById('win-badge');
+            const title = document.getElementById('win-title');
+            const desc = document.getElementById('win-desc');
+            const verify = document.getElementById('win-verify');
+            const nextLvlBtn = document.getElementById('btn-next-lvl');
+
+            card.classList.remove('hidden');
+            verify.textContent = currentProb.verify;
+
+            if (justMastered) {
+                badge.textContent = 'SZINT TELJESÍTVE';
+                title.textContent = 'Kész ez a feladattípus.';
+                desc.textContent = 'Két feladatot egymás után hiba nélkül oldottál meg, így ez a szint mostantól késznek van jelölve.';
+            } else if (alreadyDone) {
+                badge.textContent = 'HELYES';
+                title.textContent = 'Jó megoldás.';
+                desc.textContent = 'Ezt a típust már korábban teljesítetted, de bármikor generálhatsz belőle újat gyakorlásnak.';
+            } else if (hadMistake) {
+                badge.textContent = 'KIJAVÍTVA';
+                title.textContent = 'Megvan a helyes válasz.';
+                desc.textContent = 'Mivel közben volt egy megakadás, ez gyakorló kör volt. Most jöjjön 2 hibátlan feladat egymás után a szint teljesítéséhez.';
+            } else {
+                const cur = progress.streaks[lvl.id] || 0;
+                badge.textContent = `SOROZAT ${cur}/${STREAK_GOAL}`;
+                title.textContent = 'Hibátlan megoldás.';
+                desc.textContent = 'Még egy hibátlan feladat egymás után, és késznek jelöljük ezt a feladattípust.';
+            }
+
+            if ((justMastered || alreadyDone) && currentLevelIdx < LEVELS.length - 1) {
+                nextLvlBtn.classList.remove('hidden');
+            } else {
+                nextLvlBtn.classList.add('hidden');
+            }
+
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function goNextLevel() {
+            if (currentLevelIdx < LEVELS.length - 1) {
+                selectLevel(currentLevelIdx + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        /* ==============================================================
+           7. TELJES, LÉPÉSRŐL LÉPÉSRE INDOKOLT MEGOLDÁS
+           ============================================================== */
+        function revealFullSolution(isGiveUp) {
+            if (isGiveUp) {
+                markMistake();
+                step1Done = true;
+                step2Done = true;
+                step3Done = true;
+                renderInteractiveStory();
+                document.getElementById('s1-actions').classList.add('hidden');
+                document.getElementById('ans-input').disabled = true;
+                document.getElementById('btn-check-3').disabled = true;
+                document.getElementById('s3-helpers').classList.add('hidden');
+            }
+
+            const storyHighlighted = currentProb.tokens.map(tok => {
+                if (!tok.clickable) return tok.text;
+                if (tok.useful) {
+                    return `<span class="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/60 text-white">${tok.text}</span>`;
+                }
+                return `<span class="text-zinc-600 line-through">${tok.text}</span>`;
+            }).join('');
+
+            const body = document.getElementById('solution-body');
+            body.innerHTML = `
+                <!-- 1. Adatok -->
+                <div class="space-y-3">
+                    <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">01 / Fontos adatok a szövegből</div>
+                    <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 text-sm sm:text-base leading-loose text-zinc-300">
+                        ${storyHighlighted}
+                    </div>
+                    <div class="space-y-1.5 text-sm">
+                        ${currentProb.extracted.map(item => `
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 p-2.5 rounded-lg bg-noir-950 border border-zinc-800">
+                                <span class="font-mono text-xs text-red-400 sm:w-40 shrink-0">${item.key}</span>
+                                <span class="text-zinc-200">${item.val}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${currentProb.visualHtml ? `<div>${currentProb.visualHtml}</div>` : ''}
+                </div>
+
+                <!-- 2. Egyenlet és indokolt lépések -->
+                <div class="space-y-3">
+                    <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">02 / Az egyenlet és a lépések indoklása</div>
+                    <div class="p-3.5 rounded-lg bg-noir-950 border border-red-500/40 font-mono text-lg sm:text-xl font-bold text-white text-center">
+                        ${currentProb.correctEq}
+                    </div>
+                    <div class="space-y-2.5">
+                        ${currentProb.steps.map(st => `
+                            <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 space-y-2">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="font-mono text-base sm:text-lg font-bold text-white">${st.eq}</span>
+                                    <span class="font-mono text-xs font-bold px-2.5 py-1 rounded bg-red-600/20 text-red-400 border border-red-500/40">${st.op}</span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${st.why}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 3. Végeredmény -->
+                <div class="p-4 rounded-lg bg-noir-950 border-l-2 border-white space-y-1">
+                    <div class="font-mono text-base font-bold text-white">Válasz: x = ${currentProb.answer} ${currentProb.unit}</div>
+                    <div class="font-mono text-xs sm:text-sm text-zinc-400">${currentProb.verify}</div>
+                </div>
+            `;
+
+            const card = document.getElementById('card-solution');
+            card.classList.remove('hidden');
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        /* ==============================================================
+           8. HALADÁS TÖRLÉSE (INLINE MEGERŐSÍTÉS)
+           ============================================================== */
+        function toggleResetConfirm(show) {
+            const bar = document.getElementById('reset-confirm-bar');
+            if (show) bar.classList.remove('hidden');
+            else bar.classList.add('hidden');
+        }
+
+        function confirmReset() {
+            progress = { streaks: {}, completed: {} };
+            saveProgress();
+            toggleResetConfirm(false);
+            renderLevelStrip();
+            updateHeaderInfo();
+            generateNewProblem();
+        }
+
+        /* ==============================================================
+           9. INDÍTÁS
+           ============================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            renderExample(0);
+            renderLevelStrip();
+        });
+    </script>
+</body>
+</html>
