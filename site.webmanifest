@@ -1,6 +1,8 @@
 {
   "name": "HTML // 07",
   "short_name": "07",
+  "start_url": "./index.html",
+  "scope": "./",
   "icons": [
     {
       "src": "icon-192.png",

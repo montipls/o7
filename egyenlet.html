@@ -7,6 +7,9 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="manifest" href="site.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#000000">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -143,8 +146,11 @@
     <!-- LETISZTULT, MINIMALISTA FEJLÉC -->
     <header class="sticky top-0 z-30 bg-noir-950/90 backdrop-blur-md border-b border-zinc-800/80">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-            <!-- Márka -->
+            <!-- Vissza + Márka -->
             <div class="flex items-center gap-2.5">
+                <a href="index.html" aria-label="Vissza a főoldalra" class="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-800 hover:border-red-500 text-zinc-400 hover:text-red-500 transition-colors" title="Vissza">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </a>
                 <span class="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block"></span>
                 <span class="font-display font-bold tracking-tight text-base sm:text-lg text-zinc-100">
                     EGYENLET <span class="text-red-500 font-mono font-semibold">// 07</span>
@@ -2123,6 +2129,11 @@
             renderExample(0);
             renderLevelStrip();
         });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
     </script>
 </body>
 </html>
