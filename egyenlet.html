@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EGYENLET // 07 — Szöveges feladatok érthetően</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,26 +26,27 @@
                     },
                     colors: {
                         red: {
-                            100: "#f0d5dc",
-                            200: "#d9a0b0",
-                            300: "#c97a8a",
-                            400: "#a3324b",
-                            500: "#800020",
-                            600: "#5c0017",
-                            700: "#40000f",
+                            100: "#f2d5dd",
+                            200: "#dda8b8",
+                            300: "#d48898",
+                            400: "#b84060",
+                            500: "#9B1B30",
+                            600: "#7a1526",
+                            700: "#56101b",
                         },
+                        white: '#d8d4d6',
                         noir: {
-                            950: '#09090b',
-                            900: '#111114',
-                            850: '#16161a',
-                            800: '#1d1d22',
-                            700: '#2a2a32',
+                            950: '#000000',
+                            900: '#0a0a0a',
+                            850: '#0f0f0f',
+                            800: '#111111',
+                            700: '#1a1a1a',
                         },
                         crimson: {
-                            400: '#a3324b',
-                            500: '#800020',
-                            600: '#5c0017',
-                            950: '#1a0008',
+                            400: '#b84060',
+                            500: '#9B1B30',
+                            600: '#7a1526',
+                            950: '#0d0004',
                         }
                     }
                 }
@@ -55,10 +57,10 @@
     <style>
         /* Alap dark-mode beállítások és finom alter textúra */
         body {
-            background-color: #09090b;
-            color: #f4f4f5;
+            background-color: #000000;
+            color: #d8d4d6;
             -webkit-tap-highlight-color: transparent;
-            background-image: radial-gradient(rgba(128, 0, 32, 0.06) 1px, transparent 0);
+            background-image: radial-gradient(rgba(155, 27, 48, 0.06) 1px, transparent 0);
             background-size: 28px 28px;
         }
 
@@ -69,34 +71,34 @@
             margin: 2px 1px;
             border-radius: 6px;
             border: 1px solid #3f3f46;
-            background-color: #18181b;
-            color: #e4e4e7;
+            background-color: #0d0d0d;
+            color: #ccc8ca;
             cursor: pointer;
             transition: all 0.15s ease;
             line-height: 1.9;
             font-weight: 500;
         }
         .chunk-btn:hover:not(:disabled) {
-            border-color: #800020;
-            color: #ffffff;
-            background-color: #201214;
+            border-color: #9B1B30;
+            color: #d8d4d6;
+            background-color: #150a0c;
         }
         .chunk-btn.selected {
-            border-color: #800020;
-            background-color: rgba(128, 0, 32, 0.22);
-            color: #ffffff;
-            box-shadow: 0 0 0 1px rgba(128, 0, 32, 0.4);
+            border-color: #9B1B30;
+            background-color: rgba(155, 27, 48, 0.22);
+            color: #d8d4d6;
+            box-shadow: 0 0 0 1px rgba(155, 27, 48, 0.4);
         }
         .chunk-btn.wrong-pick {
-            border-color: #800020;
+            border-color: #9B1B30;
             border-style: dashed;
-            background-color: rgba(90, 0, 20, 0.35);
-            color: #c97a8a;
+            background-color: rgba(100, 10, 25, 0.35);
+            color: #d48898;
         }
         .chunk-btn.locked-useful {
-            border-color: #800020;
-            background-color: rgba(128, 0, 32, 0.18);
-            color: #ffffff;
+            border-color: #9B1B30;
+            background-color: rgba(155, 27, 48, 0.18);
+            color: #d8d4d6;
             cursor: default;
         }
         .chunk-btn.locked-fluff {
@@ -129,9 +131,9 @@
 
         /* Egyedi sötét görgetősáv */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #09090b; }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #800020; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9B1B30; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
@@ -776,11 +778,11 @@
                 <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 flex flex-col items-center">
                     <div class="font-mono text-xs text-zinc-500 mb-2">Vázlat (mindkét oldalból 2 van)</div>
                     <svg viewBox="0 0 260 115" class="w-60 h-auto">
-                        <rect x="48" y="26" width="164" height="62" rx="3" fill="#18181b" stroke="#800020" stroke-width="2"/>
-                        <text x="130" y="18" text-anchor="middle" fill="#f4f4f5" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
-                        <text x="130" y="106" text-anchor="middle" fill="#f4f4f5" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
-                        <text x="24" y="61" text-anchor="middle" fill="#a3324b" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
-                        <text x="236" y="61" text-anchor="middle" fill="#a3324b" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
+                        <rect x="48" y="26" width="164" height="62" rx="3" fill="#0d0d0d" stroke="#9B1B30" stroke-width="2"/>
+                        <text x="130" y="18" text-anchor="middle" fill="#d8d4d6" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
+                        <text x="130" y="106" text-anchor="middle" fill="#d8d4d6" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
+                        <text x="24" y="61" text-anchor="middle" fill="#b84060" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
+                        <text x="236" y="61" text-anchor="middle" fill="#b84060" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
                     </svg>
                 </div>
             `;
