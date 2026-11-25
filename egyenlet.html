@@ -14,10 +14,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Letisztult, karakteres betűtípusok: Space Grotesk (címek), Inter (szöveg), JetBrains Mono (egyenletek, kódok) -->
+    <!-- Karakteres betűtípusok: Syne (címek), IBM Plex Sans (szöveg), IBM Plex Mono (egyenletek, kódok) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -25,21 +25,21 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['"IBM Plex Sans"', 'sans-serif'],
+                        display: ['Syne', '"IBM Plex Sans"', 'sans-serif'],
+                        mono: ['"IBM Plex Mono"', 'monospace'],
                     },
                     colors: {
                         red: {
-                            100: "#f2d5dd",
-                            200: "#dda8b8",
-                            300: "#d48898",
-                            400: "#b84060",
-                            500: "#9B1B30",
-                            600: "#7a1526",
-                            700: "#56101b",
+                            100: "#f8dce3",
+                            200: "#f0b4c3",
+                            300: "#e67c95",
+                            400: "#e05672",
+                            500: "#c42442",
+                            600: "#9B1B30",
+                            700: "#6e0f20",
                         },
-                        white: '#d8d4d6',
+                        white: '#e2dfe1',
                         noir: {
                             950: '#000000',
                             900: '#0a0a0a',
@@ -48,10 +48,10 @@
                             700: '#1a1a1a',
                         },
                         crimson: {
-                            400: '#b84060',
-                            500: '#9B1B30',
-                            600: '#7a1526',
-                            950: '#0d0004',
+                            400: '#e05672',
+                            500: '#c42442',
+                            600: '#9B1B30',
+                            950: '#120206',
                         }
                     }
                 }
@@ -65,8 +65,23 @@
             background-color: #000000;
             color: #d8d4d6;
             -webkit-tap-highlight-color: transparent;
-            background-image: radial-gradient(rgba(155, 27, 48, 0.06) 1px, transparent 0);
+            background-image: radial-gradient(rgba(155, 27, 48, 0.045) 1px, transparent 0);
             background-size: 28px 28px;
+        }
+
+        /* Lowkey ezüst mikrominta: bal felül alig láthatóan, jobb alulra teljesen eltűnve */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                radial-gradient(ellipse 60% 55% at 0% 0%, rgba(226, 232, 240, 0.045) 0%, transparent 70%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath d='M22 0L44 22L22 44L0 22Z' fill='none' stroke='%23e2e8f0' stroke-width='0.75' stroke-opacity='0.075'/%3E%3Ccircle cx='22' cy='0' r='0.9' fill='%23ffffff' fill-opacity='0.11'/%3E%3Ccircle cx='0' cy='22' r='0.9' fill='%23ffffff' fill-opacity='0.11'/%3E%3C/svg%3E");
+            background-size: 100% 100%, 44px 44px;
+            -webkit-mask-image: linear-gradient(135deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0) 70%);
+            mask-image: linear-gradient(135deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0) 70%);
         }
 
         /* Kattintható szövegrészletek az adatkiválasztáshoz */
@@ -75,9 +90,10 @@
             padding: 2px 8px;
             margin: 2px 1px;
             border-radius: 6px;
-            border: 1px solid #3f3f46;
-            background-color: #0d0d0d;
-            color: #ccc8ca;
+            border: 1px solid rgba(196, 204, 216, 0.28);
+            background: linear-gradient(180deg, #17171c 0%, #0b0b0e 100%);
+            color: #d6d9e0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
             cursor: pointer;
             transition: all 0.15s ease;
             line-height: 1.9;
@@ -85,30 +101,34 @@
         }
         .chunk-btn:hover:not(:disabled) {
             border-color: #9B1B30;
-            color: #d8d4d6;
-            background-color: #150a0c;
+            color: #f4f5f8;
+            background: linear-gradient(180deg, #1d0c10 0%, #120709 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
         }
         .chunk-btn.selected {
             border-color: #9B1B30;
-            background-color: rgba(155, 27, 48, 0.22);
+            background: rgba(155, 27, 48, 0.22);
             color: #d8d4d6;
             box-shadow: 0 0 0 1px rgba(155, 27, 48, 0.4);
         }
         .chunk-btn.wrong-pick {
             border-color: #9B1B30;
             border-style: dashed;
-            background-color: rgba(100, 10, 25, 0.35);
+            background: rgba(100, 10, 25, 0.35);
             color: #d48898;
+            box-shadow: none;
         }
         .chunk-btn.locked-useful {
             border-color: #9B1B30;
-            background-color: rgba(155, 27, 48, 0.18);
+            background: rgba(155, 27, 48, 0.18);
             color: #d8d4d6;
+            box-shadow: none;
             cursor: default;
         }
         .chunk-btn.locked-fluff {
             border-color: transparent;
-            background-color: transparent;
+            background: transparent;
+            box-shadow: none;
             color: #52525b;
             text-decoration: line-through;
             padding: 0 3px;
@@ -139,157 +159,447 @@
         ::-webkit-scrollbar-track { background: #000000; }
         ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #9B1B30; }
+
+        /* Valódi ezüst / króm felületek és fényvisszaverődések */
+        .silver-header {
+            border-bottom: 1px solid rgba(212, 218, 228, 0.22);
+            box-shadow: 0 1px 18px rgba(212, 218, 228, 0.06);
+        }
+
+        .silver-text {
+            background: linear-gradient(180deg, #ffffff 0%, #e2e6ee 52%, #98a1b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .silver-card {
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(165deg, #111114 0%, #09090b 48%, #060608 100%),
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.44) 0%,
+                    rgba(176, 184, 198, 0.16) 28%,
+                    rgba(248, 250, 255, 0.54) 50%,
+                    rgba(116, 124, 138, 0.14) 76%,
+                    rgba(224, 230, 240, 0.34) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.18),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.65),
+                0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .silver-card-bright {
+            border: 1.5px solid transparent;
+            background-image:
+                linear-gradient(165deg, #16161b 0%, #0a0a0d 55%, #070709 100%),
+                linear-gradient(135deg,
+                    #ffffff 0%,
+                    #9aa3b2 25%,
+                    #ffffff 50%,
+                    #7e8694 75%,
+                    #e8ecf2 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                0 0 24px rgba(226, 232, 240, 0.15);
+        }
+
+        .silver-btn {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(180deg, #17171c 0%, #0d0d10 52%, #070709 100%),
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.68) 0%,
+                    rgba(156, 163, 175, 0.28) 32%,
+                    rgba(255, 255, 255, 0.82) 52%,
+                    rgba(100, 108, 120, 0.25) 78%,
+                    rgba(235, 240, 248, 0.58) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+                0 2px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.15s ease, box-shadow 0.22s ease;
+        }
+
+        .silver-done {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(180deg, #1b1c22 0%, #101014 55%, #09090c 100%),
+                linear-gradient(135deg,
+                    #ffffff 0%,
+                    #a6aebc 28%,
+                    #ffffff 50%,
+                    #868f9e 75%,
+                    #edf1f7 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                0 0 14px rgba(226, 232, 240, 0.14);
+            transition: transform 0.15s ease, box-shadow 0.22s ease;
+        }
+
+        .silver-btn::after,
+        .silver-done::after,
+        .silver-plate::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -120%;
+            width: 60%;
+            height: 160%;
+            background: linear-gradient(
+                105deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.05) 32%,
+                rgba(255, 255, 255, 0.34) 50%,
+                rgba(255, 255, 255, 0.05) 68%,
+                transparent 100%
+            );
+            transform: skewX(-18deg);
+            pointer-events: none;
+            transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .silver-btn:hover::after,
+        .silver-done:hover::after,
+        .silver-plate:hover::after {
+            left: 155%;
+        }
+
+        .silver-btn:hover:not(:disabled),
+        .silver-done:hover:not(:disabled) {
+            background-image:
+                linear-gradient(180deg, #212129 0%, #131318 52%, #0a0a0d 100%),
+                linear-gradient(135deg,
+                    #ffffff 0%,
+                    #b8c0cc 30%,
+                    #ffffff 50%,
+                    #8d96a5 75%,
+                    #eef2f8 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.42),
+                0 0 16px rgba(226, 232, 240, 0.16);
+        }
+
+        .silver-btn:active:not(:disabled),
+        .silver-done:active:not(:disabled),
+        .silver-plate:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .silver-plate {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            background: linear-gradient(135deg,
+                #f8fafc 0%,
+                #c5ccd6 24%,
+                #ffffff 48%,
+                #9aa2b0 74%,
+                #e9edf3 100%);
+            color: #09090b;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.95),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.28),
+                0 0 16px rgba(226, 232, 240, 0.22);
+        }
+
+        .silver-pill {
+            border: 1px solid rgba(226, 232, 240, 0.42);
+            background: linear-gradient(180deg, #23252c 0%, #121318 100%);
+            color: #e8ecf2;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+        }
+
+        .silver-bar {
+            background: linear-gradient(90deg, #cbd2dc 0%, #ffffff 50%, #9fa7b5 100%);
+            box-shadow: 0 0 8px rgba(226, 232, 240, 0.35);
+        }
+
+        /* Anodizált burgundi / rubin fém akcentusok és gradiensek */
+        .crimson-text {
+            background: linear-gradient(180deg, #ff7a96 0%, #d43252 52%, #9b1b30 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .crimson-dot {
+            background: linear-gradient(135deg, #f25c79 0%, #b51f3b 55%, #630c1c 100%);
+            box-shadow: 0 0 10px rgba(196, 36, 66, 0.65);
+            transform: rotate(45deg);
+        }
+
+        .crimson-btn {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(180deg, #be2240 0%, #93152c 52%, #660b1c 100%),
+                linear-gradient(135deg,
+                    rgba(255, 178, 194, 0.78) 0%,
+                    rgba(196, 36, 66, 0.36) 32%,
+                    rgba(255, 212, 222, 0.85) 52%,
+                    rgba(122, 21, 38, 0.32) 78%,
+                    rgba(235, 108, 134, 0.62) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            color: #ffffff;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 198, 210, 0.36),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+                0 0 18px rgba(180, 28, 56, 0.32);
+            transition: transform 0.15s ease, box-shadow 0.22s ease;
+        }
+
+        .crimson-btn::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -120%;
+            width: 60%;
+            height: 160%;
+            background: linear-gradient(
+                105deg,
+                transparent 0%,
+                rgba(255, 220, 228, 0.06) 32%,
+                rgba(255, 220, 228, 0.32) 50%,
+                rgba(255, 220, 228, 0.06) 68%,
+                transparent 100%
+            );
+            transform: skewX(-18deg);
+            pointer-events: none;
+            transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .crimson-btn:hover::after {
+            left: 155%;
+        }
+
+        .crimson-btn:hover:not(:disabled) {
+            background-image:
+                linear-gradient(180deg, #d12a4a 0%, #a51933 52%, #720d20 100%),
+                linear-gradient(135deg,
+                    #ffd2dc 0%,
+                    #d9415f 30%,
+                    #ffe8ed 50%,
+                    #9b1b30 75%,
+                    #f593a8 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 214, 222, 0.48),
+                0 0 24px rgba(204, 38, 70, 0.48);
+        }
+
+        .crimson-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .crimson-tab {
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(180deg, rgba(180, 28, 56, 0.42) 0%, rgba(112, 14, 32, 0.48) 100%),
+                linear-gradient(135deg,
+                    rgba(255, 168, 186, 0.72) 0%,
+                    rgba(184, 34, 61, 0.35) 40%,
+                    rgba(255, 200, 212, 0.75) 62%,
+                    rgba(155, 27, 48, 0.45) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            color: #ffffff;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 192, 204, 0.3),
+                0 0 14px rgba(180, 28, 56, 0.25);
+        }
+
+        .crimson-bar {
+            background: linear-gradient(90deg, #a61c35 0%, #e84c6c 50%, #9B1B30 100%);
+            box-shadow: 0 0 10px rgba(212, 50, 82, 0.5);
+        }
+
+        .crimson-card {
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(165deg, #16060a 0%, #0b0305 55%, #070203 100%),
+                linear-gradient(135deg,
+                    rgba(255, 148, 170, 0.55) 0%,
+                    rgba(155, 27, 48, 0.28) 35%,
+                    rgba(240, 96, 124, 0.6) 60%,
+                    rgba(110, 15, 32, 0.32) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 170, 188, 0.16),
+                0 0 24px rgba(155, 27, 48, 0.16);
+        }
+
+        @keyframes silverGleam {
+            0%, 72% { left: -120%; }
+            100% { left: 155%; }
+        }
+
+        .silver-shine-auto::after {
+            animation: silverGleam 5.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
 
     <!-- LETISZTULT, MINIMALISTA FEJLÉC -->
-    <header class="sticky top-0 z-30 bg-noir-950/90 backdrop-blur-md border-b border-zinc-800/80">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <header class="sticky top-0 z-30 bg-noir-950/90 backdrop-blur-md silver-header">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-4">
             <!-- Vissza + Márka -->
             <div class="flex items-center gap-2.5">
-                <a href="index.html" aria-label="Vissza a főoldalra" class="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-800 hover:border-red-500 text-zinc-400 hover:text-red-500 transition-colors" title="Vissza">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <a href="index.html" aria-label="Vissza a főoldalra" class="shrink-0 flex items-center justify-center w-8 h-8 rounded silver-btn text-zinc-200 hover:text-white" title="Vissza">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 </a>
-                <span class="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block"></span>
-                <span class="font-display font-bold tracking-tight text-base sm:text-lg text-zinc-100">
-                    EGYENLET <span class="text-red-500 font-mono font-semibold">// 07</span>
+                <span class="w-2.5 h-2.5 rounded-[2px] crimson-dot inline-block"></span>
+                <span class="font-display font-bold tracking-tight text-base sm:text-lg">
+                    <span class="silver-text">EGYENLET</span> <span class="crimson-text font-mono font-semibold">// 07</span>
                 </span>
             </div>
 
             <!-- Két egyszerű nézetváltó -->
-            <nav class="flex items-center gap-1 bg-noir-900 p-1 rounded-lg border border-zinc-800">
+            <nav class="flex items-center gap-1 p-1 rounded-md silver-card">
                 <button id="nav-learn" onclick="switchView('learn')"
-                    class="px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors bg-red-600 text-white">
+                    class="px-3 py-1.5 rounded-[4px] text-xs sm:text-sm font-semibold transition-all crimson-btn">
                     Magyarázat
                 </button>
                 <button id="nav-practice" onclick="switchView('practice')"
-                    class="px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors text-zinc-400 hover:text-zinc-100 flex items-center gap-2">
+                    class="px-3 py-1.5 rounded-[4px] text-xs sm:text-sm font-semibold transition-colors text-zinc-300 hover:text-white flex items-center gap-2">
                     <span>Gyakorlás</span>
-                    <span id="nav-count" class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">0/8</span>
+                    <span id="nav-count" class="font-mono text-[11px] px-1.5 py-0.5 rounded-[3px] silver-pill">0/8</span>
                 </button>
             </nav>
         </div>
     </header>
 
     <!-- FŐ LINEÁRIS TARTALOM -->
-    <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <main class="relative z-10 flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
         <!-- ========================================================= -->
         <!-- 1. NÉZET: MAGYARÁZAT ÉS KIDOLGOZOTT PÉLDÁK (LINEÁRIS)     -->
         <!-- ========================================================= -->
-        <section id="view-learn" class="space-y-12 animate-slide">
+        <section id="view-learn" class="space-y-10 animate-slide">
 
             <!-- Bevezető -->
-            <div class="space-y-4 border-l-2 border-red-500 pl-5">
-                <p class="font-mono text-xs uppercase tracking-widest text-red-500">
+            <div class="space-y-3 border-l-2 border-red-500 pl-4 sm:pl-5 pb-8 border-b border-zinc-800/80">
+                <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] crimson-text">
                     7. osztály / Szöveges egyenletek
                 </p>
-                <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
+                <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight silver-text leading-[1.12]">
                     Ne szavakat magolj.<br>Értsd meg, mi történik.
                 </h1>
-                <p class="text-zinc-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                <p class="text-zinc-400 text-sm sm:text-base leading-relaxed max-w-2xl">
                     A szöveges feladatoknál nem az a cél, hogy bemagolj szabályokat (például hogy a „kevesebb” szó mindig mínuszt jelent — mert ez sokszor nem is igaz). Egyszerűen képzeld el a helyzetet, dobd ki a felesleges körítést, és írd le számokkal, ami egyenlő.
                 </p>
             </div>
 
-            <!-- 3 ALAPELV LINEÁRISAN -->
-            <div class="space-y-4">
-                <h2 class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+            <!-- 3 ALAPELV EGYSÉGES SZERKEZETBEN -->
+            <div class="space-y-3">
+                <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">
                     Hogyan fogj neki minden feladatnak
                 </h2>
 
-                <div class="space-y-3">
+                <div class="rounded-md silver-card divide-y divide-zinc-800/80">
                     <!-- 01 -->
-                    <div class="p-5 rounded-xl bg-noir-900 border border-zinc-800 space-y-1.5">
-                        <div class="flex items-center gap-3">
-                            <span class="font-mono text-xs font-bold text-red-500">01</span>
-                            <h3 class="font-display font-bold text-lg text-zinc-100">Szűrd ki a felesleges szöveget</h3>
+                    <div class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-[2.25rem_1fr] gap-2 sm:gap-4 items-baseline">
+                        <span class="font-mono text-xs font-bold crimson-text">01</span>
+                        <div class="space-y-1.5">
+                            <h3 class="font-display font-bold text-base sm:text-lg text-zinc-100">Szűrd ki a felesleges szöveget</h3>
+                            <p class="text-sm text-zinc-400 leading-relaxed">
+                                A legtöbb feladatban van körítés (hogy hívják a szereplőket, milyen színű a füzet, melyik nap történt). Ezeket felejtsd el. Csak három dolog számít: <span class="text-zinc-100 font-medium">mit keresünk (x)</span>, <span class="text-zinc-100 font-medium">milyen számok és viszonyok vannak</span>, és <span class="text-zinc-100 font-medium">mennyi a végeredmény</span>.
+                            </p>
                         </div>
-                        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed pl-7">
-                            A legtöbb feladatban van körítés (hogy hívják a szereplőket, milyen színű a füzet, melyik nap történt). Ezeket felejtsd el. Csak három dolog számít: <span class="text-zinc-100 font-medium">mit keresünk (x)</span>, <span class="text-zinc-100 font-medium">milyen számok és viszonyok vannak</span>, és <span class="text-zinc-100 font-medium">mennyi a végeredmény</span>.
-                        </p>
                     </div>
 
                     <!-- 02 -->
-                    <div class="p-5 rounded-xl bg-noir-900 border border-zinc-800 space-y-3">
-                        <div class="flex items-center gap-3">
-                            <span class="font-mono text-xs font-bold text-red-500">02</span>
-                            <h3 class="font-display font-bold text-lg text-zinc-100">Miért rossz ötlet szavakat magolni?</h3>
-                        </div>
-                        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed pl-7">
-                            Nézd meg ezt az egyetlen mondatot: <span class="text-zinc-100 font-medium">„Lilinek 6-tal kevesebb kártyája van, mint Bencének.”</span>
-                        </p>
-                        <div class="pl-7 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                            <div class="p-3.5 rounded-lg bg-noir-950 border border-zinc-800">
-                                <div class="font-mono text-xs text-zinc-500 mb-1">Ha Bence az x:</div>
-                                <div class="text-zinc-300">Lilinek kevesebb van nála, tehát Lili = <span class="font-mono text-red-400 font-bold">x − 6</span></div>
+                    <div class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-[2.25rem_1fr] gap-2 sm:gap-4 items-baseline">
+                        <span class="font-mono text-xs font-bold crimson-text">02</span>
+                        <div class="space-y-3">
+                            <h3 class="font-display font-bold text-base sm:text-lg text-zinc-100">Miért rossz ötlet szavakat magolni?</h3>
+                            <p class="text-sm text-zinc-400 leading-relaxed">
+                                Nézd meg ezt az egyetlen mondatot: <span class="text-zinc-100 font-medium">„Lilinek 6-tal kevesebb kártyája van, mint Bencének.”</span>
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-sm">
+                                <div class="p-3 rounded bg-noir-950 border border-zinc-800">
+                                    <div class="font-mono text-[11px] text-zinc-500 mb-1">Ha Bence az x:</div>
+                                    <div class="text-zinc-300">Lilinek kevesebb van nála, tehát Lili = <span class="font-mono text-red-400 font-bold">x − 6</span></div>
+                                </div>
+                                <div class="p-3 rounded bg-noir-950 border border-red-500/40">
+                                    <div class="font-mono text-[11px] text-red-400 mb-1">Ha Lili az x:</div>
+                                    <div class="text-zinc-300">Akkor Bencének több van nála, tehát Bence = <span class="font-mono text-red-400 font-bold">x + 6</span></div>
+                                </div>
                             </div>
-                            <div class="p-3.5 rounded-lg bg-noir-950 border border-red-500/40">
-                                <div class="font-mono text-xs text-red-400 mb-1">Ha Lili az x:</div>
-                                <div class="text-zinc-300">Akkor Bencének több van nála, tehát Bence = <span class="font-mono text-red-400 font-bold">x + 6</span></div>
-                            </div>
+                            <p class="text-xs sm:text-sm text-zinc-500">
+                                Látod? Ugyanabban a mondatban ott volt a „kevesebb” szó, mégis <span class="font-mono text-zinc-300">+ 6</span> lett belőle, ha Lilit jelöltük x-szel. Mindig azt nézd meg: <span class="text-zinc-200">a valóságban kinek van több, és kinek kevesebb?</span>
+                            </p>
                         </div>
-                        <p class="text-xs sm:text-sm text-zinc-500 pl-7">
-                            Látod? Ugyanabban a mondatban ott volt a „kevesebb” szó, mégis <span class="font-mono text-zinc-300">+ 6</span> lett belőle, ha Lilit jelöltük x-szel. Mindig azt nézd meg: <span class="text-zinc-200">a valóságban kinek van több, és kinek kevesebb?</span>
-                        </p>
                     </div>
 
                     <!-- 03 -->
-                    <div class="p-5 rounded-xl bg-noir-900 border border-zinc-800 space-y-1.5">
-                        <div class="flex items-center gap-3">
-                            <span class="font-mono text-xs font-bold text-red-500">03</span>
-                            <h3 class="font-display font-bold text-lg text-zinc-100">Az egyenlet megoldása: bontsd le az x mellől</h3>
+                    <div class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-[2.25rem_1fr] gap-2 sm:gap-4 items-baseline">
+                        <span class="font-mono text-xs font-bold crimson-text">03</span>
+                        <div class="space-y-1.5">
+                            <h3 class="font-display font-bold text-base sm:text-lg text-zinc-100">Az egyenlet megoldása: bontsd le az x mellől</h3>
+                            <p class="text-sm text-zinc-400 leading-relaxed">
+                                Az egyenlőségjel két oldala mindig egyensúlyban van. Bármit csinálsz az egyik oldallal, ugyanazt kell csinálnod a másikkal is. A célod annyi, hogy a végére csak egyetlen <span class="font-mono text-zinc-100">x</span> maradjon a bal oldalon.
+                            </p>
                         </div>
-                        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed pl-7">
-                            Az egyenlőségjel két oldala mindig egyensúlyban van. Bármit csinálsz az egyik oldallal, ugyanazt kell csinálnod a másikkal is. A célod annyi, hogy a végére csak egyetlen <span class="font-mono text-zinc-100">x</span> maradjon a bal oldalon.
-                        </p>
                     </div>
                 </div>
             </div>
 
             <!-- KONKRÉT, LÉPÉSRŐL LÉPÉSRE MEGINDOKOLT PÉLDÁK -->
-            <div class="space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-                    <div>
-                        <h2 class="font-mono text-xs uppercase tracking-widest text-zinc-500 mb-1">
-                            Konkrét példák indoklással
-                        </h2>
-                        <p class="text-sm text-zinc-400">
-                            Nézd meg, hogyan maradnak meg a fontos adatok, és <span class="text-zinc-200">miért</span> végezzük el az egyes lépéseket.
-                        </p>
-                    </div>
+            <div class="space-y-4">
+                <div>
+                    <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500 mb-1">
+                        Konkrét példák indoklással
+                    </h2>
+                    <p class="text-sm text-zinc-400">
+                        Nézd meg, hogyan maradnak meg a fontos adatok, és <span class="text-zinc-200">miért</span> végezzük el az egyes lépéseket.
+                    </p>
                 </div>
 
-                <!-- 3 példa választó sáv -->
-                <div class="grid grid-cols-3 gap-2">
+                <!-- 3 példa választó szegmentált sáv -->
+                <div class="grid grid-cols-3 gap-1 p-1 rounded-md silver-card">
                     <button onclick="renderExample(0)" id="ex-tab-0"
-                        class="py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-red-600/15 border-red-500 text-white">
+                        class="py-2 px-2.5 rounded-[4px] font-mono text-xs sm:text-sm font-semibold transition-all crimson-tab">
                         01 / Alap
                     </button>
                     <button onclick="renderExample(1)" id="ex-tab-1"
-                        class="py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-noir-900 border-zinc-800 text-zinc-400 hover:text-zinc-200">
+                        class="py-2 px-2.5 rounded-[4px] font-mono text-xs sm:text-sm font-semibold silver-btn text-zinc-300 hover:text-white">
                         02 / Összehasonlítás
                     </button>
                     <button onclick="renderExample(2)" id="ex-tab-2"
-                        class="py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-noir-900 border-zinc-800 text-zinc-400 hover:text-zinc-200">
+                        class="py-2 px-2.5 rounded-[4px] font-mono text-xs sm:text-sm font-semibold silver-btn text-zinc-300 hover:text-white">
                         03 / Téglalap
                     </button>
                 </div>
 
                 <!-- Példa tartalom doboza -->
-                <div id="example-container" class="rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-6">
+                <div id="example-container" class="rounded-md silver-card p-5 sm:p-6 space-y-5">
                     <!-- JS tölti be -->
                 </div>
             </div>
 
             <!-- Egyetlen tiszta továbblépés gomb -->
-            <div class="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="pt-5 border-t border-zinc-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <p class="text-sm text-zinc-400">
                     A gyakorlásban minden feladatnál neked kell kikattintgatnod a hasznos adatokat, utána felírni és megoldani az egyenletet.
                 </p>
                 <button onclick="switchView('practice')"
-                    class="shrink-0 px-6 py-3.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-display font-bold text-sm sm:text-base transition-colors">
+                    class="shrink-0 px-5 py-3 rounded crimson-btn font-display font-bold text-sm">
                     Induljon a gyakorlás →
                 </button>
             </div>
@@ -298,12 +608,12 @@
         <!-- ========================================================= -->
         <!-- 2. NÉZET: LINEÁRIS GYAKORLÁS (8 FELADATTÍPUS)             -->
         <!-- ========================================================= -->
-        <section id="view-practice" class="hidden space-y-8 animate-slide">
+        <section id="view-practice" class="hidden space-y-6 animate-slide">
 
             <!-- SZINTVÁLASZTÓ SÁV (KOMPAKT, LINEÁRIS) -->
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                    <span class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                    <span class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">
                         Feladattípusok — könnyűtől a nehezebbig
                     </span>
                     <button onclick="toggleResetConfirm(true)" class="font-mono text-xs text-zinc-600 hover:text-red-400 transition-colors">
@@ -312,41 +622,41 @@
                 </div>
 
                 <!-- Inline törlés megerősítés (confirm() helyett, modal nélkül) -->
-                <div id="reset-confirm-bar" class="hidden p-3.5 rounded-lg bg-crimson-950 border border-red-500/40 flex flex-wrap items-center justify-between gap-3 text-sm animate-slide">
+                <div id="reset-confirm-bar" class="hidden p-3 rounded bg-crimson-950 border border-red-500/40 flex flex-wrap items-center justify-between gap-3 text-sm animate-slide">
                     <span class="text-zinc-200">Biztosan törlöd az eddig teljesített szinteket?</span>
                     <div class="flex items-center gap-2">
-                        <button onclick="toggleResetConfirm(false)" class="px-3 py-1.5 rounded-md bg-noir-900 border border-zinc-700 text-zinc-300 text-xs font-semibold hover:text-white">
+                        <button onclick="toggleResetConfirm(false)" class="px-3 py-1.5 rounded-[4px] silver-btn text-zinc-200 text-xs font-semibold hover:text-white">
                             Mégse
                         </button>
-                        <button onclick="confirmReset()" class="px-3 py-1.5 rounded-md bg-red-600 hover:bg-red-500 text-white text-xs font-semibold">
+                        <button onclick="confirmReset()" class="px-3 py-1.5 rounded-[4px] crimson-btn text-xs font-semibold">
                             Igen, törlés
                         </button>
                     </div>
                 </div>
 
                 <!-- 8 szint sávja -->
-                <div id="level-strip" class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                <div id="level-strip" class="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
                     <!-- JS generálja -->
                 </div>
 
                 <!-- Aktuális szint adatai + Sorozat állapota -->
-                <div class="p-4 sm:p-5 rounded-xl bg-noir-900 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="p-4 sm:px-5 sm:py-4 rounded-md silver-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <div class="flex flex-wrap items-center gap-2 mb-1">
-                            <span id="lvl-code" class="font-mono text-xs font-bold text-red-500">01 / 08</span>
+                            <span id="lvl-code" class="font-mono text-xs font-bold crimson-text">01 / 08</span>
                             <span class="text-zinc-700">•</span>
                             <span id="lvl-diff" class="font-mono text-xs text-zinc-400">Nagyon könnyű</span>
-                            <span id="lvl-done-tag" class="hidden font-mono text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-white text-black">
+                            <span id="lvl-done-tag" class="hidden font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded-[3px] silver-plate silver-shine-auto">
                                 KÉSZ
                             </span>
                         </div>
-                        <h2 id="lvl-title" class="font-display font-bold text-xl text-white">Betöltés...</h2>
+                        <h2 id="lvl-title" class="font-display font-bold text-lg sm:text-xl silver-text">Betöltés...</h2>
                     </div>
 
-                    <div class="flex items-center justify-between sm:justify-end gap-5 border-t sm:border-t-0 border-zinc-800 pt-3 sm:pt-0">
+                    <div class="flex items-center justify-between sm:justify-end gap-5 border-t sm:border-t-0 sm:border-l border-zinc-800/80 pt-3 sm:pt-0 sm:pl-5">
                         <!-- 2 egymás utáni jó megoldás jelző -->
                         <div>
-                            <div class="font-mono text-[11px] uppercase tracking-wider text-zinc-500 mb-1">
+                            <div class="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-1.5">
                                 Sorozat (2 kell)
                             </div>
                             <div class="flex items-center gap-1.5" id="streak-bars">
@@ -355,7 +665,7 @@
                             </div>
                         </div>
                         <button onclick="generateNewProblem()"
-                            class="px-3.5 py-2 rounded-lg bg-noir-950 hover:bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-xs font-mono font-semibold text-zinc-300 hover:text-white transition-colors">
+                            class="px-3.5 py-2 rounded silver-btn text-xs font-mono font-semibold text-zinc-200 hover:text-white">
                             Új adatok
                         </button>
                     </div>
@@ -365,9 +675,9 @@
             <!-- ===================================================== -->
             <!-- LÉPÉS 01: KATTINTS A HASZNOS ADATOKRA A SZÖVEGBEN     -->
             <!-- ===================================================== -->
-            <div id="card-step-1" class="rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-5">
-                <div class="flex items-center justify-between gap-2">
-                    <span id="s1-tag" class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+            <div id="card-step-1" class="rounded-md silver-card p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-zinc-800/80">
+                    <span id="s1-tag" class="font-mono text-xs font-bold uppercase tracking-widest crimson-text">
                         Lépés 01 — Adatok kiszedése
                     </span>
                     <span id="s1-status" class="font-mono text-xs text-zinc-500">Kijelölve: 0</span>
@@ -378,14 +688,14 @@
                 </p>
 
                 <!-- Interaktív szöveg doboz -->
-                <div id="interactive-story" class="p-5 rounded-lg bg-noir-950 border border-zinc-800 text-base sm:text-lg leading-loose text-zinc-200">
+                <div id="interactive-story" class="p-4 sm:p-5 rounded bg-noir-950 border border-zinc-800 text-base sm:text-lg leading-loose text-zinc-200">
                     <!-- JS generálja a kattintható darabokkal -->
                 </div>
 
                 <!-- 1. lépés gombja -->
-                <div id="s1-actions" class="flex flex-wrap items-center justify-between gap-3">
+                <div id="s1-actions" class="flex flex-wrap items-center justify-between gap-3 pt-1">
                     <button onclick="checkStep1()"
-                        class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm transition-colors">
+                        class="px-5 py-2.5 rounded crimson-btn font-semibold text-sm">
                         Adatok ellenőrzése
                     </button>
                     <button onclick="revealFullSolution(true)"
@@ -395,11 +705,11 @@
                 </div>
 
                 <!-- 1. lépés visszajelzés -->
-                <div id="s1-feedback" class="hidden p-4 rounded-lg text-sm leading-relaxed animate-slide"></div>
+                <div id="s1-feedback" class="hidden p-3.5 rounded text-sm leading-relaxed animate-slide"></div>
 
                 <!-- Ha megvan az 1. lépés: Kigyűjtött adatok összegzése + opcionális ábra -->
-                <div id="s1-summary" class="hidden pt-4 border-t border-zinc-800 space-y-4 animate-slide">
-                    <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                <div id="s1-summary" class="hidden pt-4 border-t border-zinc-800/80 space-y-3.5 animate-slide">
+                    <div class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">
                         Kigyűjtött adatok
                     </div>
                     <div id="s1-extracted-list" class="space-y-2 text-sm"></div>
@@ -410,9 +720,9 @@
             <!-- ===================================================== -->
             <!-- LÉPÉS 02: EGYENLET KIVÁLASZTÁSA                       -->
             <!-- ===================================================== -->
-            <div id="card-step-2" class="hidden rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-5 animate-slide">
-                <div class="flex items-center justify-between gap-2">
-                    <span id="s2-tag" class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+            <div id="card-step-2" class="hidden rounded-md silver-card p-5 sm:p-6 space-y-4 animate-slide">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-zinc-800/80">
+                    <span id="s2-tag" class="font-mono text-xs font-bold uppercase tracking-widest crimson-text">
                         Lépés 02 — Egyenlet felírása
                     </span>
                 </div>
@@ -425,41 +735,41 @@
                 </div>
 
                 <!-- 4 egyenlet lineárisan egymás alatt -->
-                <div id="eq-options" class="space-y-2.5">
+                <div id="eq-options" class="space-y-2">
                     <!-- JS tölti be -->
                 </div>
 
                 <!-- 2. lépés visszajelzés -->
-                <div id="s2-feedback" class="hidden p-4 rounded-lg text-sm leading-relaxed animate-slide"></div>
+                <div id="s2-feedback" class="hidden p-3.5 rounded text-sm leading-relaxed animate-slide"></div>
             </div>
 
             <!-- ===================================================== -->
             <!-- LÉPÉS 03: EGYENLET MEGOLDÁSA                          -->
             <!-- ===================================================== -->
-            <div id="card-step-3" class="hidden rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-7 space-y-5 animate-slide">
-                <div class="flex items-center justify-between gap-2">
-                    <span id="s3-tag" class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+            <div id="card-step-3" class="hidden rounded-md silver-card p-5 sm:p-6 space-y-4 animate-slide">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-zinc-800/80">
+                    <span id="s3-tag" class="font-mono text-xs font-bold uppercase tracking-widest crimson-text">
                         Lépés 03 — Megoldás
                     </span>
                 </div>
 
                 <!-- Felírt egyenlet kiemelve -->
-                <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 text-center">
-                    <div class="font-mono text-xs text-zinc-500 mb-1">A felírt egyenlet</div>
-                    <div id="locked-eq" class="font-mono text-2xl sm:text-3xl font-bold text-white tracking-wide"></div>
+                <div class="p-4 rounded bg-noir-950 border border-zinc-800 text-center">
+                    <div class="font-mono text-[11px] uppercase tracking-wider text-zinc-500 mb-1">A felírt egyenlet</div>
+                    <div id="locked-eq" class="font-mono text-2xl sm:text-3xl font-bold silver-text tracking-wide"></div>
                 </div>
 
                 <!-- Beviteli mező -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <div class="flex items-center gap-3 flex-1 px-4 py-3 rounded-lg bg-noir-950 border border-zinc-700 focus-within:border-red-500 transition-colors">
-                        <span class="font-mono font-bold text-lg text-red-500">x =</span>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <div class="flex items-center gap-3 flex-1 px-3.5 py-2.5 rounded bg-noir-950 border border-zinc-700 focus-within:border-red-500 transition-colors">
+                        <span class="font-mono font-bold text-base sm:text-lg crimson-text pr-3 border-r border-zinc-800">x =</span>
                         <input type="number" id="ans-input" placeholder="írd be a számot"
                             class="w-full bg-transparent outline-none font-mono text-lg font-semibold text-white placeholder-zinc-600"
                             onkeydown="if(event.key==='Enter') checkStep3()">
                         <span id="ans-unit" class="font-mono text-xs text-zinc-400 whitespace-nowrap"></span>
                     </div>
                     <button id="btn-check-3" onclick="checkStep3()"
-                        class="px-6 py-3.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm sm:text-base transition-colors">
+                        class="px-6 py-3 rounded crimson-btn font-semibold text-sm sm:text-base">
                         Ellenőrzés
                     </button>
                 </div>
@@ -475,36 +785,36 @@
                 </div>
 
                 <!-- Tipp doboz -->
-                <div id="s3-hint" class="hidden p-4 rounded-lg bg-noir-950 border-l-2 border-red-500 text-sm text-zinc-300 leading-relaxed animate-slide"></div>
+                <div id="s3-hint" class="hidden p-3.5 rounded bg-noir-950 border-l-2 border-red-500 text-sm text-zinc-300 leading-relaxed animate-slide"></div>
 
                 <!-- 3. lépés hibavisszajelzés -->
-                <div id="s3-feedback" class="hidden p-4 rounded-lg text-sm leading-relaxed animate-slide"></div>
+                <div id="s3-feedback" class="hidden p-3.5 rounded text-sm leading-relaxed animate-slide"></div>
             </div>
 
             <!-- ===================================================== -->
             <!-- SIKER KÁRTYA (MEGOLDVA)                               -->
             <!-- ===================================================== -->
-            <div id="card-success" class="hidden rounded-xl bg-noir-900 border-2 border-white p-5 sm:p-7 space-y-4 animate-slide">
+            <div id="card-success" class="hidden rounded-md silver-card-bright p-5 sm:p-6 space-y-4 animate-slide">
                 <div class="flex items-center gap-3">
-                    <span id="win-badge" class="font-mono text-xs font-bold uppercase px-2.5 py-1 rounded bg-white text-black">
+                    <span id="win-badge" class="font-mono text-xs font-bold uppercase px-2.5 py-1 rounded-[3px] silver-plate silver-shine-auto">
                         HELYES
                     </span>
-                    <h3 id="win-title" class="font-display font-bold text-xl text-white"></h3>
+                    <h3 id="win-title" class="font-display font-bold text-xl silver-text"></h3>
                 </div>
                 <p id="win-desc" class="text-sm sm:text-base text-zinc-300 leading-relaxed"></p>
-                <p id="win-verify" class="font-mono text-xs sm:text-sm text-zinc-400 bg-noir-950 p-3 rounded-lg border border-zinc-800"></p>
+                <p id="win-verify" class="font-mono text-xs sm:text-sm text-zinc-400 bg-noir-950 p-3 rounded border border-zinc-800"></p>
 
-                <div class="flex flex-wrap items-center gap-3 pt-2">
+                <div class="flex flex-wrap items-center gap-2.5 pt-1">
                     <button onclick="generateNewProblem()"
-                        class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm transition-colors">
+                        class="px-5 py-2.5 rounded crimson-btn font-semibold text-sm">
                         Következő feladat →
                     </button>
                     <button id="btn-next-lvl" onclick="goNextLevel()"
-                        class="hidden px-5 py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-black font-semibold text-sm transition-colors">
+                        class="hidden px-5 py-2.5 rounded silver-plate silver-shine-auto font-semibold text-sm transition-transform">
                         Tovább a következő szintre →
                     </button>
                     <button onclick="revealFullSolution(false)"
-                        class="px-4 py-2.5 rounded-lg bg-noir-950 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 font-mono text-xs transition-colors">
+                        class="px-4 py-2.5 rounded silver-btn text-zinc-200 hover:text-white font-mono text-xs">
                         Levezetés megnézése
                     </button>
                 </div>
@@ -513,10 +823,10 @@
             <!-- ===================================================== -->
             <!-- TELJES, INDOKOLT MEGOLDÁS (LÉPÉSRŐL LÉPÉSRE)          -->
             <!-- ===================================================== -->
-            <div id="card-solution" class="hidden rounded-xl bg-noir-900 border border-red-500/60 p-5 sm:p-7 space-y-6 animate-slide">
-                <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-zinc-800">
+            <div id="card-solution" class="hidden rounded-md crimson-card p-5 sm:p-6 space-y-5 animate-slide">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-zinc-800/80">
                     <div>
-                        <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
+                        <span class="font-mono text-xs font-bold uppercase tracking-widest crimson-text">
                             Teljes levezetés
                         </span>
                         <h3 class="font-display font-bold text-lg text-white mt-0.5">
@@ -525,13 +835,13 @@
                     </div>
                 </div>
 
-                <div id="solution-body" class="space-y-6">
+                <div id="solution-body" class="space-y-5">
                     <!-- JS tölti be -->
                 </div>
 
-                <div class="pt-4 border-t border-zinc-800 flex justify-end">
+                <div class="pt-4 border-t border-zinc-800/80 flex justify-end">
                     <button onclick="generateNewProblem()"
-                        class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm transition-colors">
+                        class="px-5 py-2.5 rounded crimson-btn font-semibold text-sm">
                         Megértettem, kérek új feladatot →
                     </button>
                 </div>
@@ -704,38 +1014,38 @@
             for (let i = 0; i < WORKED_EXAMPLES.length; i++) {
                 const btn = document.getElementById(`ex-tab-${i}`);
                 if (i === idx) {
-                    btn.className = 'py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-red-600/15 border-red-500 text-white';
+                    btn.className = 'py-2 px-2.5 rounded-[4px] font-mono text-xs sm:text-sm font-semibold transition-all crimson-tab';
                 } else {
-                    btn.className = 'py-2.5 px-3 rounded-lg font-mono text-xs sm:text-sm font-semibold border transition-colors bg-noir-900 border-zinc-800 text-zinc-400 hover:text-zinc-200';
+                    btn.className = 'py-2 px-2.5 rounded-[4px] font-mono text-xs sm:text-sm font-semibold silver-btn text-zinc-300 hover:text-white';
                 }
             }
 
             document.getElementById('example-container').innerHTML = `
-                <div class="space-y-5 animate-slide">
+                <div class="space-y-4 animate-slide">
                     <div class="font-display font-bold text-lg text-white">${ex.title}</div>
 
                     <!-- Szöveg áthúzott körítéssel -->
-                    <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 text-base leading-loose text-zinc-300">
+                    <div class="p-4 rounded bg-noir-950 border border-zinc-800 text-sm sm:text-base leading-loose text-zinc-300">
                         ${ex.storyHtml}
                     </div>
 
                     <!-- Hogyan lesz ebből egyenlet -->
                     <div class="space-y-2">
-                        <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">Hogyan írjuk fel az egyenletet</div>
+                        <div class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">Hogyan írjuk fel az egyenletet</div>
                         <p class="text-sm text-zinc-300 leading-relaxed">${ex.setupNote}</p>
-                        <div class="p-3.5 rounded-lg bg-noir-950 border border-red-500/40 font-mono text-lg sm:text-xl font-bold text-white text-center">
+                        <div class="p-3 rounded bg-noir-950 border border-red-500/40 font-mono text-lg sm:text-xl font-bold text-white text-center">
                             ${ex.equation}
                         </div>
                     </div>
 
                     <!-- Lépések konkrét indoklással -->
-                    <div class="space-y-2.5">
-                        <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">Megoldás lépésről lépésre</div>
+                    <div class="space-y-2">
+                        <div class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">Megoldás lépésről lépésre</div>
                         ${ex.steps.map(st => `
-                            <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 space-y-2">
+                            <div class="p-3.5 rounded bg-noir-950 border border-zinc-800 space-y-1.5">
                                 <div class="flex items-center justify-between gap-2">
                                     <span class="font-mono text-base sm:text-lg font-bold text-white">${st.eq}</span>
-                                    <span class="font-mono text-xs font-bold px-2.5 py-1 rounded bg-red-600/20 text-red-400 border border-red-500/40">${st.op}</span>
+                                    <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-[3px] bg-red-600/20 text-red-400 border border-red-500/40">${st.op}</span>
                                 </div>
                                 <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${st.why}</p>
                             </div>
@@ -743,7 +1053,7 @@
                     </div>
 
                     <!-- Ellenőrzés -->
-                    <div class="p-3.5 rounded-lg bg-noir-950 border-l-2 border-white text-xs sm:text-sm text-zinc-300 font-mono">
+                    <div class="p-3.5 rounded bg-noir-950 border-l-2 border-white text-xs sm:text-sm text-zinc-300 font-mono">
                         ${ex.verify}
                     </div>
                 </div>
@@ -786,11 +1096,11 @@
                 <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 flex flex-col items-center">
                     <div class="font-mono text-xs text-zinc-500 mb-2">Vázlat (mindkét oldalból 2 van)</div>
                     <svg viewBox="0 0 260 115" class="w-60 h-auto">
-                        <rect x="48" y="26" width="164" height="62" rx="3" fill="#0d0d0d" stroke="#9B1B30" stroke-width="2"/>
-                        <text x="130" y="18" text-anchor="middle" fill="#d8d4d6" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
-                        <text x="130" y="106" text-anchor="middle" fill="#d8d4d6" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
-                        <text x="24" y="61" text-anchor="middle" fill="#b84060" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
-                        <text x="236" y="61" text-anchor="middle" fill="#b84060" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
+                        <rect x="48" y="26" width="164" height="62" rx="3" fill="#0d0d0d" stroke="#c42442" stroke-width="2"/>
+                        <text x="130" y="18" text-anchor="middle" fill="#e2dfe1" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
+                        <text x="130" y="106" text-anchor="middle" fill="#e2dfe1" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700">${longSide}</text>
+                        <text x="24" y="61" text-anchor="middle" fill="#e05672" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
+                        <text x="236" y="61" text-anchor="middle" fill="#e05672" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="700">${shortSide}</text>
                     </svg>
                 </div>
             `;
@@ -1644,13 +1954,13 @@
             if (view === 'learn') {
                 learn.classList.remove('hidden');
                 prac.classList.add('hidden');
-                btnL.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors bg-red-600 text-white';
-                btnP.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors text-zinc-400 hover:text-zinc-100 flex items-center gap-2';
+                btnL.className = 'px-3 py-1.5 rounded-[4px] text-xs sm:text-sm font-semibold transition-all crimson-btn';
+                btnP.className = 'px-3 py-1.5 rounded-[4px] text-xs sm:text-sm font-semibold transition-colors text-zinc-300 hover:text-white flex items-center gap-2';
             } else {
                 learn.classList.add('hidden');
                 prac.classList.remove('hidden');
-                btnP.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors bg-red-600 text-white flex items-center gap-2';
-                btnL.className = 'px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors text-zinc-400 hover:text-zinc-100';
+                btnP.className = 'px-3 py-1.5 rounded-[4px] text-xs sm:text-sm font-semibold transition-all crimson-btn flex items-center gap-2';
+                btnL.className = 'px-3 py-1.5 rounded-[4px] text-xs sm:text-sm font-semibold transition-colors text-zinc-300 hover:text-white';
                 if (!currentProb) selectLevel(currentLevelIdx);
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1666,18 +1976,18 @@
                 const done = !!progress.completed[lvl.id];
                 const streak = progress.streaks[lvl.id] || 0;
 
-                let cls = 'bg-noir-900 border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200';
+                let cls = 'silver-btn text-zinc-300 hover:text-white';
                 if (active) {
-                    cls = 'bg-red-600 border-red-500 text-white';
+                    cls = 'crimson-tab';
                 } else if (done) {
-                    cls = 'bg-noir-900 border-white/70 text-white hover:border-white';
+                    cls = 'silver-done silver-shine-auto text-white';
                 }
 
                 return `
                     <button onclick="selectLevel(${idx})" title="${lvl.title}"
-                        class="relative py-2.5 px-2 rounded-lg border font-mono text-sm font-bold transition-all flex flex-col items-center justify-center gap-1 ${cls}">
+                        class="relative py-2 px-2 rounded border font-mono text-sm font-bold transition-all flex flex-col items-center justify-center gap-0.5 ${cls}">
                         <span>${lvl.code}</span>
-                        <span class="text-[10px] font-normal ${active ? 'text-red-100' : done ? 'text-zinc-300' : 'text-zinc-600'}">
+                        <span class="text-[10px] font-normal ${active ? 'text-red-100' : done ? 'text-zinc-300' : 'text-zinc-500'}">
                             ${done ? 'KÉSZ' : `${streak}/${STREAK_GOAL}`}
                         </span>
                     </button>
@@ -1702,7 +2012,7 @@
             let barsHtml = '';
             for (let i = 0; i < STREAK_GOAL; i++) {
                 barsHtml += `<span class="w-8 h-2 rounded-sm transition-colors ${
-                    i < filled ? (done ? 'bg-white' : 'bg-red-500') : 'bg-zinc-800'
+                    i < filled ? (done ? 'silver-bar' : 'crimson-bar') : 'bg-zinc-800'
                 }"></span>`;
             }
             document.getElementById('streak-bars').innerHTML = barsHtml;
@@ -1734,7 +2044,7 @@
             hadMistake = false;
 
             // Lépés 1 visszaállítása
-            document.getElementById('s1-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-red-500';
+            document.getElementById('s1-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest crimson-text';
             document.getElementById('s1-tag').textContent = 'Lépés 01 — Adatok kiszedése';
             document.getElementById('s1-status').textContent = 'Kijelölve: 0';
             document.getElementById('s1-actions').classList.remove('hidden');
@@ -1745,14 +2055,14 @@
             // Lépés 2, 3, siker, megoldás elrejtése
             document.getElementById('card-step-2').classList.add('hidden');
             document.getElementById('s2-feedback').classList.add('hidden');
-            document.getElementById('s2-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-red-500';
+            document.getElementById('s2-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest crimson-text';
             document.getElementById('s2-tag').textContent = 'Lépés 02 — Egyenlet felírása';
 
             document.getElementById('card-step-3').classList.add('hidden');
             document.getElementById('s3-hint').classList.add('hidden');
             document.getElementById('s3-feedback').classList.add('hidden');
             document.getElementById('s3-helpers').classList.remove('hidden');
-            document.getElementById('s3-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest text-red-500';
+            document.getElementById('s3-tag').className = 'font-mono text-xs font-bold uppercase tracking-widest crimson-text';
             document.getElementById('s3-tag').textContent = 'Lépés 03 — Megoldás';
 
             const inp = document.getElementById('ans-input');
@@ -1858,9 +2168,9 @@
 
             document.getElementById('eq-options').innerHTML = currentProb.options.map((opt, idx) => `
                 <button id="eq-btn-${idx}" onclick="checkStep2(${idx})"
-                    class="w-full text-left px-5 py-4 rounded-lg bg-noir-950 border border-zinc-800 hover:border-red-500 font-mono text-base sm:text-lg font-semibold text-zinc-100 transition-all flex items-center justify-between gap-3">
+                    class="w-full text-left px-4 py-3.5 rounded silver-btn font-mono text-base sm:text-lg font-semibold text-zinc-100 hover:text-white flex items-center justify-between gap-3">
                     <span>${opt.eq}</span>
-                    <span class="text-xs font-mono text-zinc-600">0${idx + 1}</span>
+                    <span class="text-xs font-mono text-zinc-400">0${idx + 1}</span>
                 </button>
             `).join('');
 
@@ -1879,9 +2189,9 @@
                     const b = document.getElementById(`eq-btn-${i}`);
                     b.disabled = true;
                     if (i === idx) {
-                        b.className = 'w-full text-left px-5 py-4 rounded-lg bg-red-600/15 border border-white font-mono text-base sm:text-lg font-bold text-white flex items-center justify-between gap-3';
+                        b.className = 'w-full text-left px-4 py-3.5 rounded silver-done silver-shine-auto font-mono text-base sm:text-lg font-bold text-white flex items-center justify-between gap-3';
                     } else {
-                        b.className = 'w-full text-left px-5 py-4 rounded-lg bg-noir-950/40 border border-zinc-900 font-mono text-base sm:text-lg text-zinc-600 flex items-center justify-between gap-3';
+                        b.className = 'w-full text-left px-4 py-3.5 rounded bg-noir-950/40 border border-zinc-900 font-mono text-base sm:text-lg text-zinc-600 flex items-center justify-between gap-3';
                     }
                 });
 
@@ -1898,12 +2208,12 @@
             } else {
                 markMistake();
                 btn.disabled = true;
-                btn.className = 'w-full text-left px-5 py-4 rounded-lg bg-crimson-950/60 border border-dashed border-red-500/60 font-mono text-base sm:text-lg text-zinc-500 line-through flex items-center justify-between gap-3';
+                btn.className = 'w-full text-left px-4 py-3.5 rounded bg-crimson-950/60 border border-dashed border-red-500/60 font-mono text-base sm:text-lg text-zinc-500 line-through flex items-center justify-between gap-3';
 
-                fb.className = 'p-4 rounded-lg bg-crimson-950 border border-red-500/50 text-sm text-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-slide';
+                fb.className = 'p-3.5 rounded bg-crimson-950 border border-red-500/50 text-sm text-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-slide';
                 fb.innerHTML = `
                     <span><strong class="text-red-400">Nem ez az:</strong> ${opt.whyWrong}</span>
-                    <button onclick="revealFullSolution(true)" class="shrink-0 px-3 py-1.5 rounded-md bg-noir-950 border border-zinc-700 hover:border-zinc-500 text-xs font-mono text-zinc-300">
+                    <button onclick="revealFullSolution(true)" class="shrink-0 px-3 py-1.5 rounded-[4px] silver-btn text-xs font-mono text-zinc-200">
                         Megoldás mutatása
                     </button>
                 `;
@@ -1946,7 +2256,7 @@
                 fb.className = 'p-4 rounded-lg bg-crimson-950 border border-red-500/50 text-sm text-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-slide';
                 fb.innerHTML = `
                     <span>A <strong class="font-mono text-white">${val}</strong> nem jó megoldás. Ellenőrizd a számolásod, vagy nézd meg a lépéseket!</span>
-                    <button onclick="revealFullSolution(true)" class="shrink-0 px-3 py-1.5 rounded-md bg-noir-950 border border-zinc-700 hover:border-zinc-500 text-xs font-mono text-zinc-300">
+                    <button onclick="revealFullSolution(true)" class="shrink-0 px-3 py-1.5 rounded-md silver-btn text-xs font-mono text-zinc-200">
                         Teljes levezetés
                     </button>
                 `;
@@ -2057,13 +2367,13 @@
             body.innerHTML = `
                 <!-- 1. Adatok -->
                 <div class="space-y-3">
-                    <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">01 / Fontos adatok a szövegből</div>
-                    <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 text-sm sm:text-base leading-loose text-zinc-300">
+                    <div class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">01 / Fontos adatok a szövegből</div>
+                    <div class="p-4 rounded bg-noir-950 border border-zinc-800 text-sm sm:text-base leading-loose text-zinc-300">
                         ${storyHighlighted}
                     </div>
                     <div class="space-y-1.5 text-sm">
                         ${currentProb.extracted.map(item => `
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 p-2.5 rounded-lg bg-noir-950 border border-zinc-800">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 p-2.5 rounded bg-noir-950 border border-zinc-800">
                                 <span class="font-mono text-xs text-red-400 sm:w-40 shrink-0">${item.key}</span>
                                 <span class="text-zinc-200">${item.val}</span>
                             </div>
@@ -2074,16 +2384,16 @@
 
                 <!-- 2. Egyenlet és indokolt lépések -->
                 <div class="space-y-3">
-                    <div class="font-mono text-xs uppercase tracking-widest text-zinc-500">02 / Az egyenlet és a lépések indoklása</div>
-                    <div class="p-3.5 rounded-lg bg-noir-950 border border-red-500/40 font-mono text-lg sm:text-xl font-bold text-white text-center">
+                    <div class="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">02 / Az egyenlet és a lépések indoklása</div>
+                    <div class="p-3 rounded bg-noir-950 border border-red-500/40 font-mono text-lg sm:text-xl font-bold text-white text-center">
                         ${currentProb.correctEq}
                     </div>
-                    <div class="space-y-2.5">
+                    <div class="space-y-2">
                         ${currentProb.steps.map(st => `
-                            <div class="p-4 rounded-lg bg-noir-950 border border-zinc-800 space-y-2">
+                            <div class="p-3.5 rounded bg-noir-950 border border-zinc-800 space-y-1.5">
                                 <div class="flex items-center justify-between gap-2">
                                     <span class="font-mono text-base sm:text-lg font-bold text-white">${st.eq}</span>
-                                    <span class="font-mono text-xs font-bold px-2.5 py-1 rounded bg-red-600/20 text-red-400 border border-red-500/40">${st.op}</span>
+                                    <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-[3px] bg-red-600/20 text-red-400 border border-red-500/40">${st.op}</span>
                                 </div>
                                 <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${st.why}</p>
                             </div>
@@ -2092,7 +2402,7 @@
                 </div>
 
                 <!-- 3. Végeredmény -->
-                <div class="p-4 rounded-lg bg-noir-950 border-l-2 border-white space-y-1">
+                <div class="p-3.5 rounded bg-noir-950 border-l-2 border-white space-y-1">
                     <div class="font-mono text-base font-bold text-white">Válasz: x = ${currentProb.answer} ${currentProb.unit}</div>
                     <div class="font-mono text-xs sm:text-sm text-zinc-400">${currentProb.verify}</div>
                 </div>

@@ -15,7 +15,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -23,21 +23,21 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['"IBM Plex Sans"', 'sans-serif'],
+                        display: ['Syne', '"IBM Plex Sans"', 'sans-serif'],
+                        mono: ['"IBM Plex Mono"', 'monospace'],
                     },
                     colors: {
                         red: {
-                            100: "#f2d5dd",
-                            200: "#dda8b8",
-                            300: "#d48898",
-                            400: "#b84060",
-                            500: "#9B1B30",
-                            600: "#7a1526",
-                            700: "#56101b",
+                            100: "#f8dce3",
+                            200: "#f0b4c3",
+                            300: "#e67c95",
+                            400: "#e05672",
+                            500: "#c42442",
+                            600: "#9B1B30",
+                            700: "#6e0f20",
                         },
-                        white: '#d8d4d6',
+                        white: '#e2dfe1',
                         noir: {
                             950: '#000000',
                             900: '#0a0a0a',
@@ -46,10 +46,10 @@
                             700: '#1a1a1a',
                         },
                         crimson: {
-                            400: '#b84060',
-                            500: '#9B1B30',
-                            600: '#7a1526',
-                            950: '#0d0004',
+                            400: '#e05672',
+                            500: '#c42442',
+                            600: '#9B1B30',
+                            950: '#120206',
                         }
                     }
                 }
@@ -62,8 +62,23 @@
             background-color: #000000;
             color: #d8d4d6;
             -webkit-tap-highlight-color: transparent;
-            background-image: radial-gradient(rgba(155, 27, 48, 0.06) 1px, transparent 0);
+            background-image: radial-gradient(rgba(155, 27, 48, 0.045) 1px, transparent 0);
             background-size: 28px 28px;
+        }
+
+        /* Lowkey ezüst mikrominta: bal felül alig láthatóan, jobb alulra teljesen eltűnve */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                radial-gradient(ellipse 60% 55% at 0% 0%, rgba(226, 232, 240, 0.045) 0%, transparent 70%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath d='M22 0L44 22L22 44L0 22Z' fill='none' stroke='%23e2e8f0' stroke-width='0.75' stroke-opacity='0.075'/%3E%3Ccircle cx='22' cy='0' r='0.9' fill='%23ffffff' fill-opacity='0.11'/%3E%3Ccircle cx='0' cy='22' r='0.9' fill='%23ffffff' fill-opacity='0.11'/%3E%3C/svg%3E");
+            background-size: 100% 100%, 44px 44px;
+            -webkit-mask-image: linear-gradient(135deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0) 70%);
+            mask-image: linear-gradient(135deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0) 70%);
         }
 
         @keyframes slideUp {
@@ -78,42 +93,175 @@
         ::-webkit-scrollbar-track { background: #000000; }
         ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #9B1B30; }
+
+        .silver-header {
+            border-bottom: 1px solid rgba(212, 218, 228, 0.22);
+            box-shadow: 0 1px 18px rgba(212, 218, 228, 0.06);
+        }
+
+        .silver-text {
+            background: linear-gradient(180deg, #ffffff 0%, #e2e6ee 52%, #98a1b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .crimson-text {
+            background: linear-gradient(180deg, #ff7a96 0%, #d43252 52%, #9b1b30 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .crimson-dot {
+            background: linear-gradient(135deg, #f25c79 0%, #b51f3b 55%, #630c1c 100%);
+            box-shadow: 0 0 10px rgba(196, 36, 66, 0.65);
+            transform: rotate(45deg);
+        }
+
+        .silver-card {
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(165deg, #111114 0%, #09090b 48%, #060608 100%),
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.46) 0%,
+                    rgba(176, 184, 198, 0.16) 28%,
+                    rgba(248, 250, 255, 0.56) 50%,
+                    rgba(116, 124, 138, 0.14) 76%,
+                    rgba(224, 230, 240, 0.36) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.65),
+                0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .silver-btn {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background-image:
+                linear-gradient(180deg, #17171c 0%, #0d0d10 52%, #070709 100%),
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.68) 0%,
+                    rgba(156, 163, 175, 0.28) 32%,
+                    rgba(255, 255, 255, 0.82) 52%,
+                    rgba(100, 108, 120, 0.25) 78%,
+                    rgba(235, 240, 248, 0.58) 100%);
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.26),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+                0 2px 12px rgba(0, 0, 0, 0.55);
+            transition: transform 0.15s ease, box-shadow 0.22s ease;
+        }
+
+        .silver-btn::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -120%;
+            width: 60%;
+            height: 160%;
+            background: linear-gradient(
+                105deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.05) 32%,
+                rgba(255, 255, 255, 0.34) 50%,
+                rgba(255, 255, 255, 0.05) 68%,
+                transparent 100%
+            );
+            transform: skewX(-18deg);
+            pointer-events: none;
+            transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .silver-btn:hover::after {
+            left: 155%;
+        }
+
+        .silver-btn:hover {
+            background-image:
+                linear-gradient(180deg, #212129 0%, #131318 52%, #0a0a0d 100%),
+                linear-gradient(135deg,
+                    #ffffff 0%,
+                    #b8c0cc 30%,
+                    #ffffff 50%,
+                    #8d96a5 75%,
+                    #eef2f8 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.42),
+                0 0 18px rgba(226, 232, 240, 0.16);
+        }
+
+        .silver-btn:active {
+            transform: translateY(1px);
+        }
+
+        @keyframes silverGleam {
+            0%, 72% { left: -120%; }
+            100% { left: 155%; }
+        }
+
+        .silver-shine-auto::after {
+            animation: silverGleam 5.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
 
-    <header class="sticky top-0 z-30 bg-noir-950/90 backdrop-blur-md border-b border-zinc-800/80">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2.5">
-                <span class="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block"></span>
-                <span class="font-display font-bold tracking-tight text-base sm:text-lg text-zinc-100">
-                    HTML <span class="text-red-500 font-mono font-semibold">// 07</span>
+    <header class="sticky top-0 z-30 bg-noir-950/90 backdrop-blur-md silver-header">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-[2px] crimson-dot inline-block"></span>
+                <span class="font-display font-bold tracking-tight text-base sm:text-lg">
+                    <span class="silver-text">HTML</span> <span class="crimson-text font-mono font-semibold">// 07</span>
                 </span>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6 animate-slide">
+    <main class="relative z-10 flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-16 flex flex-col justify-between gap-12 animate-slide">
 
-        <section class="rounded-xl bg-noir-900 border border-zinc-800 p-5 sm:p-6 space-y-4">
-            <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-red-500">
-                Matek
-            </h2>
+        <section class="rounded-md silver-card overflow-hidden">
+            <div class="px-5 py-3 border-b border-zinc-800/80 flex items-center justify-between gap-4">
+                <h2 class="font-mono text-[11px] font-bold uppercase tracking-[0.2em] crimson-text">
+                    Matek
+                </h2>
+                <span class="font-mono text-[11px] text-zinc-500 tracking-wider">
+                    01 TÉMA
+                </span>
+            </div>
 
-            <ul class="space-y-2.5">
-                <li>
-                    <a href="egyenlet.html"
-                        class="group w-full px-5 py-4 rounded-lg bg-noir-950 border border-zinc-800 hover:border-red-500 transition-colors flex items-center justify-between gap-3">
-                        <span class="font-display font-bold text-base sm:text-lg text-zinc-100 group-hover:text-white transition-colors">
-                            Egyenlet...
-                        </span>
-                        <span class="font-mono text-sm text-zinc-500 group-hover:text-red-500 transition-colors">
-                            →
-                        </span>
-                    </a>
-                </li>
-            </ul>
+            <div class="p-3 sm:p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="egyenlet.html"
+                            class="group w-full px-4 py-3.5 rounded silver-btn silver-shine-auto flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <span class="font-mono text-xs crimson-text font-bold shrink-0">01</span>
+                                <div class="min-w-0">
+                                    <div class="font-display font-bold text-base sm:text-lg silver-text truncate">
+                                        Egyenlet...
+                                    </div>
+                                    <div class="font-mono text-[11px] text-zinc-500 truncate">
+                                        7. osztály · Szöveges egyenletek
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="font-mono text-sm text-zinc-400 group-hover:text-red-400 group-hover:translate-x-0.5 transition-all shrink-0">
+                                →
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </section>
+
+        <footer class="pt-4 border-t border-zinc-900 flex items-center justify-between font-mono text-[11px] text-zinc-600">
+            <span>HTML // 07</span>
+            <span>OFFLINE PWA</span>
+        </footer>
 
     </main>
 
