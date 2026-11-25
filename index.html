@@ -22,6 +22,15 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
+                        red: {
+                            100: "#f0d5dc",
+                            200: "#d9a0b0",
+                            300: "#c97a8a",
+                            400: "#a3324b",
+                            500: "#800020",
+                            600: "#5c0017",
+                            700: "#40000f",
+                        },
                         noir: {
                             950: '#09090b',
                             900: '#111114',
@@ -30,10 +39,10 @@
                             700: '#2a2a32',
                         },
                         crimson: {
-                            400: '#f87171',
-                            500: '#ef4444',
-                            600: '#dc2626',
-                            950: '#2b0b0e',
+                            400: '#a3324b',
+                            500: '#800020',
+                            600: '#5c0017',
+                            950: '#1a0008',
                         }
                     }
                 }
@@ -46,7 +55,7 @@
             background-color: #09090b;
             color: #f4f4f5;
             -webkit-tap-highlight-color: transparent;
-            background-image: radial-gradient(rgba(239, 68, 68, 0.06) 1px, transparent 0);
+            background-image: radial-gradient(rgba(128, 0, 32, 0.06) 1px, transparent 0);
             background-size: 28px 28px;
         }
 
@@ -61,7 +70,7 @@
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #09090b; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+        ::-webkit-scrollbar-thumb:hover { background: #800020; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
