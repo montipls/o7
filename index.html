@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="hu" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>GYAKORLÓ // o7</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="icon-180.png">
@@ -37,7 +37,7 @@
                             600: "#9B1B30",
                             700: "#6e0f20",
                         },
-                        white: '#e2dfe1',
+                        white: '#eceff4',
                         noir: {
                             950: '#000000',
                             900: '#0a0a0a',
@@ -60,10 +60,8 @@
     <style>
         body {
             background-color: #000000;
-            color: #d8d4d6;
+            color: #e0e4ec;
             -webkit-tap-highlight-color: transparent;
-            background-image: radial-gradient(rgba(155, 27, 48, 0.045) 1px, transparent 0);
-            background-size: 28px 28px;
         }
 
         /* Lowkey ezüst mikrominta: bal felül alig láthatóan, jobb alulra teljesen eltűnve */
@@ -198,6 +196,24 @@
             transform: translateY(1px);
         }
 
+        .silver-btn:disabled {
+            opacity: 0.42;
+            filter: saturate(0.4);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .silver-btn:disabled::after {
+            display: none;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid rgba(224, 86, 114, 0.85);
+            outline-offset: 2px;
+        }
+
         @keyframes silverGleam {
             0%, 72% { left: -120%; }
             100% { left: 155%; }
@@ -205,6 +221,19 @@
 
         .silver-shine-auto::after {
             animation: silverGleam 5.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .silver-shine-auto::after {
+                animation: none !important;
+                display: none;
+            }
         }
     </style>
 </head>
@@ -221,14 +250,14 @@
         </div>
     </header>
 
-    <main class="relative z-10 flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-16 flex flex-col justify-between gap-12 animate-slide">
+    <main class="relative z-10 flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-[max(2rem,env(safe-area-inset-bottom))] space-y-8 animate-slide">
 
         <section class="rounded-md silver-card overflow-hidden">
             <div class="px-5 py-3 border-b border-zinc-800/80 flex items-center justify-between gap-4">
                 <h2 class="font-mono text-[11px] font-bold uppercase tracking-[0.2em] crimson-text">
                     Matek
                 </h2>
-                <span class="font-mono text-[11px] text-zinc-500 tracking-wider">
+                <span class="font-mono text-[11px] text-zinc-400 tracking-wider">
                     01 TÉMA
                 </span>
             </div>
@@ -237,15 +266,15 @@
                 <ul class="space-y-2">
                     <li>
                         <a href="egyenlet.html"
-                            class="group w-full px-4 py-3.5 rounded silver-btn silver-shine-auto flex items-center justify-between gap-4">
+                            class="group w-full px-4 py-3.5 rounded silver-btn flex items-center justify-between gap-4">
                             <div class="flex items-center gap-3.5 min-w-0">
                                 <span class="font-mono text-xs crimson-text font-bold shrink-0">01</span>
                                 <div class="min-w-0">
-                                    <div class="font-display font-bold text-base sm:text-lg silver-text truncate">
-                                        Egyenlet...
+                                    <div class="font-display font-bold text-base sm:text-lg silver-text leading-[1.2]">
+                                        Egyenletek
                                     </div>
-                                    <div class="font-mono text-[11px] text-zinc-500 truncate">
-                                        Szöveges egyenletek
+                                    <div class="font-mono text-[11px] text-zinc-400 mt-0.5">
+                                        Szöveges feladatok lépésről lépésre
                                     </div>
                                 </div>
                             </div>
@@ -258,7 +287,7 @@
             </div>
         </section>
 
-        <footer class="pt-4 border-t border-zinc-900 flex items-center justify-between font-mono text-[11px] text-zinc-600">
+        <footer class="pt-4 border-t border-zinc-900 flex items-center justify-between font-mono text-[11px] text-zinc-400">
             <span>GYAKORLÓ // o7</span>
             <span>OFFLINE PWA</span>
         </footer>
